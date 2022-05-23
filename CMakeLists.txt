@@ -2,7 +2,10 @@
 # License: MIT
 
 # Set CMake minimum version
-cmake_minimum_required (VERSION 3.10.2)
+cmake_minimum_required (VERSION 3.14)
+
+# Use solution folders to organize projects
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Set project name
 project (Urho3D)
