@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 

@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -12,8 +13,7 @@
 
 #include "../DebugNew.h"
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
 RenderSurface::~RenderSurface()
 {
@@ -102,14 +102,6 @@ RenderSurface::RenderSurface(Texture* parentTexture)
     }
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-    {
-        Constructor_D3D9(parentTexture);
-        return;
-    }
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
     {
@@ -126,11 +118,6 @@ bool RenderSurface::CreateRenderBuffer(unsigned width, unsigned height, unsigned
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return CreateRenderBuffer_OGL(width, height, format, multiSample);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return CreateRenderBuffer_D3D9(width, height, format, multiSample);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -150,11 +137,6 @@ void RenderSurface::OnDeviceLost()
         return OnDeviceLost_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceLost_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return OnDeviceLost_D3D11();
@@ -170,15 +152,8 @@ void RenderSurface::Release()
         return Release_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Release_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Release_D3D11();
 #endif
-}
-
 }

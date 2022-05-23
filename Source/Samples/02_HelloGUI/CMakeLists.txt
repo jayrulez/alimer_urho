@@ -12,3 +12,5 @@ setup_main_executable ()
 
 # Setup test cases
 setup_test ()
+
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "Samples")

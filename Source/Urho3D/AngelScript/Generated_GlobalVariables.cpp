@@ -112,9 +112,6 @@ void ASRegisterGeneratedGlobalVariables(asIScriptEngine* engine)
     // static const String EP_DIRECT3D11 | File: ../Engine/EngineDefs.h
     engine->RegisterGlobalProperty("const String EP_DIRECT3D11", (void*)&EP_DIRECT3D11);
 
-    // static const String EP_DIRECT3D9 | File: ../Engine/EngineDefs.h
-    engine->RegisterGlobalProperty("const String EP_DIRECT3D9", (void*)&EP_DIRECT3D9);
-
     // static const String EP_DUMP_SHADERS | File: ../Engine/EngineDefs.h
     engine->RegisterGlobalProperty("const String EP_DUMP_SHADERS", (void*)&EP_DUMP_SHADERS);
 
@@ -317,7 +314,7 @@ void ASRegisterGeneratedGlobalVariables(asIScriptEngine* engine)
     engine->RegisterGlobalProperty("const int MAX_RENDERTARGETS", (void*)&MAX_RENDERTARGETS);
 
     // static const int MAX_TEXTURE_QUALITY_LEVELS | File: ../GraphicsAPI/Texture.h
-    engine->RegisterGlobalProperty("const int MAX_TEXTURE_QUALITY_LEVELS", (void*)&MAX_TEXTURE_QUALITY_LEVELS);
+    engine->RegisterGlobalProperty("const uint MAX_TEXTURE_QUALITY_LEVELS", (void*)&MAX_TEXTURE_QUALITY_LEVELS);
 
     // static const int MAX_VERTEX_LIGHTS | File: ../Graphics/Drawable.h
     engine->RegisterGlobalProperty("const int MAX_VERTEX_LIGHTS", (void*)&MAX_VERTEX_LIGHTS);

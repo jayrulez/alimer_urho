@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -9,12 +10,11 @@
 
 #include "../DebugNew.h"
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
-ConstantBuffer::ConstantBuffer(Context* context) :
-    Object(context),
-    GPUObject(GetSubsystem<Graphics>())
+ConstantBuffer::ConstantBuffer(Context* context)
+    : Object(context)
+    , GPUObject(GetSubsystem<Graphics>())
 {
 }
 
@@ -60,11 +60,6 @@ void ConstantBuffer::Release()
         return Release_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Release_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Release_D3D11();
@@ -80,11 +75,6 @@ void ConstantBuffer::OnDeviceReset()
         return OnDeviceReset_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceReset_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return OnDeviceReset_D3D11();
@@ -98,11 +88,6 @@ bool ConstantBuffer::SetSize(unsigned size)
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return SetSize_OGL(size);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetSize_D3D9(size);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -122,15 +107,9 @@ void ConstantBuffer::Apply()
         return Apply_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Apply_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Apply_D3D11();
 #endif
-}
 
 }

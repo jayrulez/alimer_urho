@@ -51,6 +51,7 @@ endif ()
 # Add targets
 foreach (TARGET ETCPACK FreeType LZ4 PugiXml rapidjson SDL StanHull STB)
     add_subdirectory (ThirdParty/${TARGET})
+    set_property(TARGET ${TARGET} PROPERTY FOLDER "ThirdParty")
 endforeach ()
 
 if (URHO3D_ANGELSCRIPT)

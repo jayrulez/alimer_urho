@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -1076,12 +1077,11 @@ RenderSurface* Renderer::GetDepthStencil(int width, int height, int multiSample,
     // (when using OpenGL Graphics will allocate right size surfaces on demand to emulate Direct3D9)
     if (width == graphics_->GetWidth() && height == graphics_->GetHeight() && multiSample == 1 &&
         graphics_->GetMultiSample() == multiSample)
-        return nullptr;
-    else
     {
-        return static_cast<Texture2D*>(GetScreenBuffer(width, height, Graphics::GetDepthStencilFormat(), multiSample, autoResolve,
-            false, false, false))->GetRenderSurface();
+        return nullptr;
     }
+
+    return static_cast<Texture2D*>(GetScreenBuffer(width, height, Graphics::GetDepthStencilFormat(), multiSample, autoResolve, false, false, false))->GetRenderSurface();
 }
 
 OcclusionBuffer* Renderer::GetOcclusionBuffer(Camera* camera)

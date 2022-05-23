@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -169,10 +170,6 @@ bool Engine::Initialize(const VariantMap& parameters)
         gapi = GAPI_OPENGL;
 #endif
 
-#ifdef URHO3D_D3D9
-        gapi = GAPI_D3D9;
-#endif
-
 #ifdef URHO3D_D3D11
         gapi = GAPI_D3D11;
 #endif
@@ -183,12 +180,6 @@ bool Engine::Initialize(const VariantMap& parameters)
         bool gapi_gl = GetParameter(parameters, EP_OPENGL, false).GetBool();
         if (gapi_gl)
             gapi = GAPI_OPENGL;
-#endif
-
-#ifdef URHO3D_D3D9
-        bool gapi_d3d9 = GetParameter(parameters, EP_DIRECT3D9, false).GetBool();
-        if (gapi_d3d9)
-            gapi = GAPI_D3D9;
 #endif
 
 #ifdef URHO3D_D3D11
@@ -851,8 +842,6 @@ VariantMap Engine::ParseParameters(const Vector<String>& arguments)
                 ret[EP_FLUSH_GPU] = true;
             else if (argument == "opengl")
                 ret[EP_OPENGL] = true;
-            else if (argument == "d3d9")
-                ret[EP_DIRECT3D9] = true;
             else if (argument == "d3d11")
                 ret[EP_DIRECT3D11] = true;
             else if (argument == "gl2")

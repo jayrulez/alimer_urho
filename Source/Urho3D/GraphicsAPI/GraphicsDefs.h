@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 /// \file
 
@@ -26,7 +27,6 @@ enum GAPI
 {
     GAPI_NONE = 0,
     GAPI_OPENGL,
-    GAPI_D3D9,
     GAPI_D3D11
 };
 
@@ -433,7 +433,7 @@ inline const StringHash PSP_NORMALOFFSETSCALE{"NormalOffsetScalePS"};
 // Scale calculation from bounding box diagonal.
 inline const Vector3 DOT_SCALE{1 / 3.0f, 1 / 3.0f, 1 / 3.0f};
 
-enum MaterialQuality : u32
+enum MaterialQuality : uint32_t
 {
     QUALITY_LOW = 0,
     QUALITY_MEDIUM = 1,
@@ -441,7 +441,7 @@ enum MaterialQuality : u32
     QUALITY_MAX = 15,
 };
 
-enum ClearTarget : u32
+enum ClearTarget : uint32_t
 {
     CLEAR_COLOR = 0x1,
     CLEAR_DEPTH = 0x2,
@@ -450,7 +450,7 @@ enum ClearTarget : u32
 URHO3D_FLAGSET(ClearTarget, ClearTargetFlags);
 
 // Legacy vertex element bitmasks.
-enum VertexMask : u32
+enum VertexMask : uint32_t
 {
     MASK_NONE = 0x0,
     MASK_POSITION = 0x1,
@@ -470,10 +470,10 @@ enum VertexMask : u32
 };
 URHO3D_FLAGSET(VertexMask, VertexMaskFlags);
 
-inline constexpr i32 MAX_RENDERTARGETS = 4;
-inline constexpr i32 MAX_VERTEX_STREAMS = 4;
-inline constexpr i32 MAX_CONSTANT_REGISTERS = 256;
+inline constexpr int32_t MAX_RENDERTARGETS = 4;
+inline constexpr int32_t MAX_VERTEX_STREAMS = 4;
+inline constexpr int32_t MAX_CONSTANT_REGISTERS = 256;
 
-inline constexpr i32 BITS_PER_COMPONENT = 8;
+inline constexpr int32_t BITS_PER_COMPONENT = 8;
 
 } // namespace Urho3D

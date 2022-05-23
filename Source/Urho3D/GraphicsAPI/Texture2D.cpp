@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -17,11 +18,10 @@
 
 #include "../DebugNew.h"
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
-Texture2D::Texture2D(Context* context) :
-    Texture(context)
+Texture2D::Texture2D(Context* context)
+    : Texture(context)
 {
 #ifdef URHO3D_OPENGL
     if (Graphics::GetGAPI() == GAPI_OPENGL)
@@ -183,11 +183,6 @@ void Texture2D::OnDeviceLost()
         return OnDeviceLost_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceLost_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return OnDeviceLost_D3D11();
@@ -201,11 +196,6 @@ void Texture2D::OnDeviceReset()
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return OnDeviceReset_OGL();
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceReset_D3D9();
 #endif
 
 #ifdef URHO3D_D3D11
@@ -223,29 +213,19 @@ void Texture2D::Release()
         return Release_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Release_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Release_D3D11();
 #endif
 }
 
-bool Texture2D::SetData(unsigned level, int x, int y, int width, int height, const void* data)
+bool Texture2D::SetData(uint32_t level, int x, int y, int width, int height, const void* data)
 {
     GAPI gapi = Graphics::GetGAPI();
 
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return SetData_OGL(level, x, y, width, height, data);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetData_D3D9(level, x, y, width, height, data);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -265,11 +245,6 @@ bool Texture2D::SetData(Image* image, bool useAlpha)
         return SetData_OGL(image, useAlpha);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetData_D3D9(image, useAlpha);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return SetData_D3D11(image, useAlpha);
@@ -278,18 +253,13 @@ bool Texture2D::SetData(Image* image, bool useAlpha)
     return {}; // Prevent warning
 }
 
-bool Texture2D::GetData(unsigned level, void* dest) const
+bool Texture2D::GetData(uint32_t level, void* dest) const
 {
     GAPI gapi = Graphics::GetGAPI();
 
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return GetData_OGL(level, dest);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return GetData_D3D9(level, dest);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -309,17 +279,10 @@ bool Texture2D::Create()
         return Create_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Create_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Create_D3D11();
 #endif
 
     return {}; // Prevent warning
-}
-
 }

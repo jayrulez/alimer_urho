@@ -96,9 +96,6 @@ public:
     /// @property
     Texture* GetParentTexture() const { return parentTexture_; }
 
-    /// Return Direct3D9 surface.
-    void* GetSurface() const { return surface_; }
-
     /// Return Direct3D11 rendertarget or depth-stencil view. Not valid on OpenGL.
     void* GetRenderTargetView() const { return renderTargetView_; }
 
@@ -126,13 +123,6 @@ private:
     void Release_OGL();
 #endif // def URHO3D_OPENGL
 
-#ifdef URHO3D_D3D9
-    void Constructor_D3D9(Texture* parentTexture);
-    bool CreateRenderBuffer_D3D9(unsigned width, unsigned height, unsigned format, int multiSample);
-    void OnDeviceLost_D3D9();
-    void Release_D3D9();
-#endif // def URHO3D_D3D9
-
 #ifdef URHO3D_D3D11
     void Constructor_D3D11(Texture* parentTexture);
     bool CreateRenderBuffer_D3D11(unsigned width, unsigned height, unsigned format, int multiSample);
@@ -146,9 +136,6 @@ private:
     // https://github.com/doxygen/doxygen/issues/7623
     union
     {
-        /// Direct3D9 surface.
-        /// @nobind
-        void* surface_;
         /// Direct3D11 rendertarget or depth-stencil view.
         /// @nobind
         void* renderTargetView_;

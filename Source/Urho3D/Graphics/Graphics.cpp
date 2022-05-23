@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -38,8 +39,7 @@
 
 #include "../DebugNew.h"
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
 void Graphics::SetExternalWindow(void* window)
 {
@@ -588,14 +588,6 @@ Graphics::Graphics(Context* context, GAPI gapi)
     }
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-    {
-        Constructor_D3D9();
-        return;
-    }
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
     {
@@ -613,14 +605,6 @@ Graphics::~Graphics()
     if (gapi == GAPI_OPENGL)
     {
         Destructor_OGL();
-        return;
-    }
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-    {
-        Destructor_D3D9();
         return;
     }
 #endif
@@ -643,11 +627,6 @@ bool Graphics::SetScreenMode(int width, int height, const ScreenModeParams& para
         return SetScreenMode_OGL(width, height, params, maximize);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetScreenMode_D3D9(width, height, params, maximize);;
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return SetScreenMode_D3D11(width, height, params, maximize);;
@@ -665,11 +644,6 @@ void Graphics::SetSRGB(bool enable)
         return SetSRGB_OGL(enable);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetSRGB_D3D9(enable);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return SetSRGB_D3D11(enable);
@@ -683,11 +657,6 @@ void Graphics::SetDither(bool enable)
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return SetDither_OGL(enable);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetDither_D3D9(enable);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -705,11 +674,6 @@ void Graphics::SetFlushGPU(bool enable)
         return SetFlushGPU_OGL(enable);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetFlushGPU_D3D9(enable);;
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return SetFlushGPU_D3D11(enable);;
@@ -723,11 +687,6 @@ void Graphics::SetForceGL2(bool enable)
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return SetForceGL2_OGL(enable);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetForceGL2_D3D9(enable);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -745,11 +704,6 @@ void Graphics::Close()
         return Close_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Close_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Close_D3D11();
@@ -763,11 +717,6 @@ bool Graphics::TakeScreenShot(Image& destImage)
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return TakeScreenShot_OGL(destImage);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return TakeScreenShot_D3D9(destImage);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -787,11 +736,6 @@ bool Graphics::BeginFrame()
         return BeginFrame_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return BeginFrame_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return BeginFrame_D3D11();
@@ -809,11 +753,6 @@ void Graphics::EndFrame()
         return EndFrame_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return EndFrame_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return EndFrame_D3D11();
@@ -829,11 +768,6 @@ void Graphics::Clear(ClearTargetFlags flags, const Color& color, float depth, un
         return Clear_OGL(flags, color, depth, stencil);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Clear_D3D9(flags, color, depth, stencil);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Clear_D3D11(flags, color, depth, stencil);
@@ -847,11 +781,6 @@ bool Graphics::ResolveToTexture(Texture2D* destination, const IntRect& viewport)
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return ResolveToTexture_OGL(destination, viewport);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return ResolveToTexture_D3D9(destination, viewport);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -871,11 +800,6 @@ bool Graphics::ResolveToTexture(Texture2D* texture)
         return ResolveToTexture_OGL(texture);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return ResolveToTexture_D3D9(texture);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return ResolveToTexture_D3D11(texture);
@@ -891,11 +815,6 @@ bool Graphics::ResolveToTexture(TextureCube* texture)
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return ResolveToTexture_OGL(texture);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return ResolveToTexture_D3D9(texture);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -915,11 +834,6 @@ void Graphics::Draw(PrimitiveType type, unsigned vertexStart, unsigned vertexCou
         return Draw_OGL(type, vertexStart, vertexCount);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Draw_D3D9(type, vertexStart, vertexCount);;
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Draw_D3D11(type, vertexStart, vertexCount);;
@@ -933,11 +847,6 @@ void Graphics::Draw(PrimitiveType type, unsigned indexStart, unsigned indexCount
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return Draw_OGL(type, indexStart, indexCount, minVertex, vertexCount);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Draw_D3D9(type, indexStart, indexCount, minVertex, vertexCount);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -2684,7 +2593,7 @@ unsigned Graphics::GetFormat(const String& formatName)
     return {}; // Prevent warning
 }
 
-void RegisterGraphicsLibrary(Context* context)
+void Urho3D::RegisterGraphicsLibrary(Context* context)
 {
     Animation::RegisterObject(context);
     Material::RegisterObject(context);
@@ -2714,6 +2623,4 @@ void RegisterGraphicsLibrary(Context* context)
     DebugRenderer::RegisterObject(context);
     Octree::RegisterObject(context);
     Zone::RegisterObject(context);
-}
-
 }

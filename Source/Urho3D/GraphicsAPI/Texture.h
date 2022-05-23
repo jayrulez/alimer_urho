@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #pragma once
 
@@ -11,7 +12,7 @@
 namespace Urho3D
 {
 
-static const int MAX_TEXTURE_QUALITY_LEVELS = 3;
+static constexpr uint32_t MAX_TEXTURE_QUALITY_LEVELS = 3;
 
 class XMLElement;
 class XMLFile;
@@ -42,7 +43,7 @@ public:
     /// Set texture max. anisotropy level. No effect if not using anisotropic filtering. Value 0 (default) uses the default setting from Renderer.
     /// @property
     void SetAnisotropy(unsigned level);
-    /// Set shadow compare mode. Not used on Direct3D9.
+    /// Set shadow compare mode. 
     void SetShadowCompare(bool enable);
     /// Set border color for border addressing mode.
     /// @property
@@ -92,7 +93,7 @@ public:
     /// @property
     unsigned GetAnisotropy() const { return anisotropy_; }
 
-    /// Return whether shadow compare is enabled. Not used on Direct3D9.
+    /// Return whether shadow compare is enabled. 
     bool GetShadowCompare() const { return shadowCompare_; }
 
     /// Return border color.
@@ -178,7 +179,7 @@ public:
 
     /// Set the mipmap levels dirty flag. Called internally by Graphics.
     void SetLevelsDirty();
-    /// Regenerate mipmap levels for a rendertarget after rendering and before sampling. Called internally by Graphics. No-op on Direct3D9. On OpenGL the texture must have been bound to work properly.
+    /// Regenerate mipmap levels for a rendertarget after rendering and before sampling. Called internally by Graphics. On OpenGL the texture must have been bound to work properly.
     void RegenerateLevels();
 
     /// Check maximum allowed mip levels for a specific texture size.
@@ -193,7 +194,7 @@ public:
 
 protected:
 #ifdef URHO3D_OPENGL
-    /// Convert format to sRGB. Not used on Direct3D9.
+    /// Convert format to sRGB. 
     unsigned GetSRGBFormat_OGL(unsigned format);
 
     /// Return the non-internal texture format corresponding to an OpenGL internal format.
@@ -201,7 +202,7 @@ protected:
 #endif // def URHO3D_OPENGL
 
 #ifdef URHO3D_D3D11
-    /// Convert format to sRGB. Not used on Direct3D9.
+    /// Convert format to sRGB.
     unsigned GetSRGBFormat_D3D11(unsigned format);
 
     /// Return the shader resource view format corresponding to a texture format. Handles conversion of typeless depth texture formats. Only used on Direct3D11.
@@ -221,15 +222,6 @@ protected:
     unsigned GetRowDataSize_OGL(int width) const;
     void RegenerateLevels_OGL();
 #endif // def URHO3D_OPENGL
-
-#ifdef URHO3D_D3D9
-    void SetSRGB_D3D9(bool enable);
-    void UpdateParameters_D3D9();
-    bool GetParametersDirty_D3D9() const;
-    bool IsCompressed_D3D9() const;
-    unsigned GetRowDataSize_D3D9(int width) const;
-    void RegenerateLevels_D3D9();
-#endif // def URHO3D_D3D9
 
 #ifdef URHO3D_D3D11
     void SetSRGB_D3D11(bool enable);
@@ -264,11 +256,11 @@ protected:
     /// Requested mip levels.
     unsigned requestedLevels_{};
     /// Texture width.
-    int width_{};
+    uint32_t width_{};
     /// Texture height.
-    int height_{};
+    uint32_t height_{};
     /// Texture depth.
-    int depth_{};
+    uint32_t depth_{};
     /// Shadow compare mode.
     bool shadowCompare_{};
     /// Filtering mode.

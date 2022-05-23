@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -12,28 +13,30 @@
 
 #include "../DebugNew.h"
 
+using namespace Urho3D;
+
 namespace Urho3D
 {
+    extern const char* SCENE_CATEGORY;
 
-extern const char* SCENE_CATEGORY;
+    static const char* fillModeNames[] =
+    {
+        "Solid",
+        "Wireframe",
+        "Point",
+        nullptr
+    };
 
-static const char* fillModeNames[] =
-{
-    "Solid",
-    "Wireframe",
-    "Point",
-    nullptr
-};
+    static const Matrix4 flipMatrix(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, -1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );
+}
 
-static const Matrix4 flipMatrix(
-    1.0f, 0.0f, 0.0f, 0.0f,
-    0.0f, -1.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 1.0f
-);
-
-Camera::Camera(Context* context) :
-    Component(context),
+Camera::Camera(Context* context)
+    : Component(context),
     viewDirty_(true),
     projectionDirty_(true),
     frustumDirty_(true),
@@ -673,6 +676,4 @@ void Camera::UpdateProjection() const
 
     projectionDirty_ = false;
     customProjection_ = false;
-}
-
 }

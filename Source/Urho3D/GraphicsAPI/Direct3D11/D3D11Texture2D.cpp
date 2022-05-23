@@ -50,7 +50,7 @@ void Texture2D::Release_D3D11()
     URHO3D_SAFE_RELEASE(sampler_);
 }
 
-bool Texture2D::SetData_D3D11(unsigned level, int x, int y, int width, int height, const void* data)
+bool Texture2D::SetData_D3D11(uint32_t level, int x, int y, int width, int height, const void* data)
 {
     URHO3D_PROFILE(SetTextureData);
 
@@ -260,7 +260,7 @@ bool Texture2D::SetData_D3D11(Image* image, bool useAlpha)
     return true;
 }
 
-bool Texture2D::GetData_D3D11(unsigned level, void* dest) const
+bool Texture2D::GetData_D3D11(uint32_t level, void* dest) const
 {
     if (!object_.ptr_)
     {
@@ -292,8 +292,7 @@ bool Texture2D::GetData_D3D11(unsigned level, void* dest) const
     int levelWidth = GetLevelWidth(level);
     int levelHeight = GetLevelHeight(level);
 
-    D3D11_TEXTURE2D_DESC textureDesc;
-    memset(&textureDesc, 0, sizeof textureDesc);
+    D3D11_TEXTURE2D_DESC textureDesc{};
     textureDesc.Width = (UINT)levelWidth;
     textureDesc.Height = (UINT)levelHeight;
     textureDesc.MipLevels = 1;
@@ -357,8 +356,7 @@ bool Texture2D::Create_D3D11()
 
     levels_ = CheckMaxLevels(width_, height_, requestedLevels_);
 
-    D3D11_TEXTURE2D_DESC textureDesc;
-    memset(&textureDesc, 0, sizeof textureDesc);
+    D3D11_TEXTURE2D_DESC textureDesc{};
     textureDesc.Format = (DXGI_FORMAT)(sRGB_ ? GetSRGBFormat_D3D11(format_) : format_);
 
     // Disable multisampling if not supported

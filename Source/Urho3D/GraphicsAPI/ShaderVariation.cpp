@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -9,8 +10,7 @@
 
 #include "../DebugNew.h"
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
 ShaderParameter::ShaderParameter(const String& name, unsigned glType, int location) :   // NOLINT(hicpp-member-init)
     name_{name},
@@ -28,18 +28,10 @@ ShaderParameter::ShaderParameter(ShaderType type, const String& name, unsigned o
 {
 }
 
-ShaderParameter::ShaderParameter(ShaderType type, const String& name, unsigned reg, unsigned regCount) :    // NOLINT(hicpp-member-init)
-    type_{type},
-    name_{name},
-    register_{reg},
-    regCount_{regCount}
-{
-}
-
-ShaderVariation::ShaderVariation(Shader* owner, ShaderType type) :
-    GPUObject(owner->GetSubsystem<Graphics>()),
-    owner_(owner),
-    type_(type)
+ShaderVariation::ShaderVariation(Shader* owner, ShaderType type)
+    : GPUObject(owner->GetSubsystem<Graphics>())
+    , owner_(owner)
+    , type_(type)
 {
 }
 
@@ -67,11 +59,6 @@ void ShaderVariation::OnDeviceLost()
         return OnDeviceLost_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceLost_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return OnDeviceLost_D3D11();
@@ -87,11 +74,6 @@ void ShaderVariation::Release()
         return Release_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Release_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Release_D3D11();
@@ -105,11 +87,6 @@ bool ShaderVariation::Create()
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return Create_OGL();
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Create_D3D9();
 #endif
 
 #ifdef URHO3D_D3D11
@@ -129,15 +106,8 @@ void ShaderVariation::SetDefines(const String& defines)
         return SetDefines_OGL(defines);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetDefines_D3D9(defines);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return SetDefines_D3D11(defines);
 #endif
-}
-
 }

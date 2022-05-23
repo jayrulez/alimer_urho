@@ -2207,12 +2207,6 @@ static void ShaderParameter__ShaderParameter_ShaderType_constspStringamp_unsigne
     new(_ptr) ShaderParameter(type, name, offset, size, buffer);
 }
 
-// ShaderParameter::ShaderParameter(ShaderType type, const String& name, unsigned reg, unsigned regCount)
-static void ShaderParameter__ShaderParameter_ShaderType_constspStringamp_unsigned_unsigned(ShaderParameter* _ptr, ShaderType type, const String& name, unsigned reg, unsigned regCount)
-{
-    new(_ptr) ShaderParameter(type, name, reg, regCount);
-}
-
 // struct ShaderParameter | File: ../GraphicsAPI/ShaderVariation.h
 static void Register_ShaderParameter(asIScriptEngine* engine)
 {
@@ -2220,8 +2214,6 @@ static void Register_ShaderParameter(asIScriptEngine* engine)
     engine->RegisterObjectBehaviour("ShaderParameter", asBEHAVE_CONSTRUCT, "void f(const String&in, uint, int)", AS_FUNCTION_OBJFIRST(ShaderParameter__ShaderParameter_constspStringamp_unsigned_int), AS_CALL_CDECL_OBJFIRST);
     // ShaderParameter::ShaderParameter(ShaderType type, const String& name, unsigned offset, unsigned size, unsigned buffer)
     engine->RegisterObjectBehaviour("ShaderParameter", asBEHAVE_CONSTRUCT, "void f(ShaderType, const String&in, uint, uint, uint)", AS_FUNCTION_OBJFIRST(ShaderParameter__ShaderParameter_ShaderType_constspStringamp_unsigned_unsigned_unsigned), AS_CALL_CDECL_OBJFIRST);
-    // ShaderParameter::ShaderParameter(ShaderType type, const String& name, unsigned reg, unsigned regCount)
-    engine->RegisterObjectBehaviour("ShaderParameter", asBEHAVE_CONSTRUCT, "void f(ShaderType, const String&in, uint, uint)", AS_FUNCTION_OBJFIRST(ShaderParameter__ShaderParameter_ShaderType_constspStringamp_unsigned_unsigned), AS_CALL_CDECL_OBJFIRST);
 
     // ShaderParameter::~ShaderParameter() | Implicitly-declared
     engine->RegisterObjectBehaviour("ShaderParameter", asBEHAVE_DESTRUCT, "void f()", AS_DESTRUCTOR(ShaderParameter), AS_CALL_CDECL_OBJFIRST);

@@ -27,8 +27,6 @@ class URHO3D_API Pass : public RefCounted
 public:
     /// Construct.
     explicit Pass(const String& name);
-    /// Destruct.
-    ~Pass() override;
 
     /// Set blend mode.
     /// @property
@@ -239,7 +237,7 @@ public:
     bool HasPass(const String& name) const;
 
     /// Return a pass, or null if not found.
-    Pass* GetPass(unsigned passIndex) const { return passIndex < passes_.Size() ? passes_[passIndex].Get() : nullptr; }
+    Pass* GetPass(uint32_t passIndex) const { return passIndex < passes_.Size() ? passes_[passIndex].Get() : nullptr; }
 
     /// Return a pass by name, or null if not found. This overload should not be called in time-critical rendering loops; use a pre-acquired pass index instead.
     Pass* GetPass(const String& name) const;
@@ -256,7 +254,7 @@ public:
 
     /// Return number of passes.
     /// @property
-    unsigned GetNumPasses() const;
+    uint32_t GetNumPasses() const;
     /// Return all pass names.
     /// @property
     Vector<String> GetPassNames() const;

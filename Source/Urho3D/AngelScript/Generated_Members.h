@@ -4561,17 +4561,11 @@ template <class T> void RegisterMembers_ShaderParameter(asIScriptEngine* engine,
     // int ShaderParameter::location_
     engine->RegisterObjectProperty(className, "int location", offsetof(T, location_));
 
-    // unsigned ShaderParameter::register_
-    engine->RegisterObjectProperty(className, "uint register", offsetof(T, register_));
-
     // unsigned ShaderParameter::size_
     engine->RegisterObjectProperty(className, "uint size", offsetof(T, size_));
 
     // unsigned ShaderParameter::glType_
     engine->RegisterObjectProperty(className, "uint glType", offsetof(T, glType_));
-
-    // unsigned ShaderParameter::regCount_
-    engine->RegisterObjectProperty(className, "uint regCount", offsetof(T, regCount_));
 
     // unsigned ShaderParameter::buffer_
     engine->RegisterObjectProperty(className, "uint buffer", offsetof(T, buffer_));

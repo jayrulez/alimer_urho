@@ -1062,7 +1062,7 @@ void UI::Render(VertexBuffer* buffer, const PODVector<UIBatch>& batches, unsigne
             if (technique)
             {
                 Pass* pass = nullptr;
-                for (int i = 0; i < technique->GetNumPasses(); ++i)
+                for (uint32_t i = 0; i < technique->GetNumPasses(); ++i)
                 {
                     pass = technique->GetPass(i);
                     if (pass)

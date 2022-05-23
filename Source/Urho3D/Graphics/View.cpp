@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -299,7 +300,7 @@ bool View::Define(RenderSurface* renderTarget, Viewport* viewport)
     viewSize_ = viewRect_.Size();
     rtSize_ = IntVector2(rtWidth, rtHeight);
 
-    // On OpenGL flip the viewport if rendering to a texture for consistent UV addressing with Direct3D9
+    // On OpenGL flip the viewport if rendering to a texture for consistent UV addressing with Direct3D11
     if (Graphics::GetGAPI() == GAPI_OPENGL && renderTarget_)
     {
         viewRect_.bottom_ = rtHeight - viewRect_.top_;
@@ -579,7 +580,7 @@ void View::Render()
     if (Graphics::GetGAPI() == GAPI_OPENGL && renderTarget_)
     {
         // On OpenGL, flip the projection if rendering to a texture so that the texture can be addressed in the same way
-        // as a render texture produced on Direct3D9
+        // as a render texture produced on Direct3D11
         // Note that the state of the FlipVertical mode is toggled here rather than enabled
         // The reason for this is that we want the mode to be the opposite of what the user has currently set for the
         // camera when rendering to texture for OpenGL
@@ -1744,14 +1745,7 @@ void View::SetRenderTargets(RenderPathCommand& command)
                 useColorWrite = false;
                 useCustomDepth = true;
 
-                // On D3D9 actual depth-only rendering is illegal, we need a color rendertarget
-                if (Graphics::GetGAPI() == GAPI_D3D9 && !depthOnlyDummyTexture_)
-                {
-                    depthOnlyDummyTexture_ = renderer_->GetScreenBuffer(texture->GetWidth(), texture->GetHeight(),
-                        graphics_->GetDummyColorFormat(), texture->GetMultiSample(), texture->GetAutoResolve(), false, false, false);
-                }
-
-                graphics_->SetRenderTarget(0, GetRenderSurfaceFromTexture(depthOnlyDummyTexture_));
+                graphics_->SetRenderTarget(0, (RenderSurface*)nullptr);
                 graphics_->SetDepthStencil(GetRenderSurfaceFromTexture(texture));
             }
             else
@@ -1952,7 +1946,6 @@ void View::AllocateScreenBuffers()
     bool hasPingpong = false;
     bool needSubstitute = false;
     unsigned numViewportTextures = 0;
-    depthOnlyDummyTexture_ = nullptr;
     lastCustomDepthSurface_ = nullptr;
 
     // Check for commands with special meaning: has custom depth, renders a scene pass to other than the destination viewport,

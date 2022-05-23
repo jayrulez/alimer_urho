@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -16,6 +17,7 @@
 #include "../GraphicsAPI/IndexBuffer.h"
 #include "../GraphicsAPI/Texture2D.h"
 #include "../GraphicsAPI/VertexBuffer.h"
+#include "../GraphicsAPI/ShaderVariation.h"
 #include "../IO/Log.h"
 #include "../Scene/Node.h"
 #include "../Scene/Scene.h"
@@ -24,12 +26,14 @@
 
 #include "../DebugNew.h"
 
+using namespace Urho3D;
+
 namespace Urho3D
 {
+    extern const char* blendModeNames[];
 
-extern const char* blendModeNames[];
-
-static const unsigned MASK_VERTEX2D = MASK_POSITION | MASK_COLOR | MASK_TEXCOORD1;
+    static const unsigned MASK_VERTEX2D = MASK_POSITION | MASK_COLOR | MASK_TEXCOORD1;
+}
 
 ViewBatchInfo2D::ViewBatchInfo2D() :
     vertexBufferUpdateFrameNumber_(0),
@@ -284,7 +288,7 @@ SharedPtr<Material> Renderer2D::CreateMaterial(Texture2D* texture, BlendMode ble
     return newMaterial;
 }
 
-void CheckDrawableVisibilityWork(const WorkItem* item, unsigned threadIndex)
+void Urho3D::CheckDrawableVisibilityWork(const WorkItem* item, unsigned threadIndex)
 {
     auto* renderer = reinterpret_cast<Renderer2D*>(item->aux_);
     auto** start = reinterpret_cast<Drawable2D**>(item->start_);
@@ -463,7 +467,7 @@ void Renderer2D::UpdateViewBatchInfo(ViewBatchInfo2D& viewBatchInfo, Camera* cam
 
     // Add the final batch if necessary
     if (currMaterial && vCount)
-        AddViewBatch(viewBatchInfo, currMaterial, iStart, iCount, vStart, vCount,distance);
+        AddViewBatch(viewBatchInfo, currMaterial, iStart, iCount, vStart, vCount, distance);
 
     viewBatchInfo.indexCount_ = iStart + iCount;
     viewBatchInfo.vertexCount_ = vStart + vCount;
@@ -498,6 +502,4 @@ void Renderer2D::AddViewBatch(ViewBatchInfo2D& viewBatchInfo, Material* material
     geometry->SetDrawRange(TRIANGLE_LIST, indexStart, indexCount, vertexStart, vertexCount, false);
 
     viewBatchInfo.batchCount_++;
-}
-
 }

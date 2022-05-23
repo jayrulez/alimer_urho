@@ -170,11 +170,6 @@ void Texture3D::OnDeviceLost()
         return OnDeviceLost_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceLost_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return OnDeviceLost_D3D11();
@@ -188,11 +183,6 @@ void Texture3D::OnDeviceReset()
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return OnDeviceReset_OGL();
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceReset_D3D9();
 #endif
 
 #ifdef URHO3D_D3D11
@@ -294,11 +284,6 @@ bool Texture3D::Create()
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return Create_OGL();
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Create_D3D9();
 #endif
 
 #ifdef URHO3D_D3D11
