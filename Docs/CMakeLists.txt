@@ -100,11 +100,6 @@ if (DOXYGEN_FOUND)
     endif ()
 
     # Add custom 'doc' target for generating Urho3D documentation
-    if (URHO3D_UPDATE_SOURCE_TREE)
-        foreach (FILE ScriptAPI.dox AngelScriptAPI.h LuaScriptAPI.dox)
-            list (APPEND UPDATE_COMMANDS COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/generated/${FILE} ${CMAKE_CURRENT_SOURCE_DIR}/${FILE})
-        endforeach ()
-    endif ()
     file (GLOB DOX_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.dox)
     add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/html/index.html
         COMMAND ${DOXYGEN_EXECUTABLE} generated/Doxyfile ${REDIRECT_STDOUT}
