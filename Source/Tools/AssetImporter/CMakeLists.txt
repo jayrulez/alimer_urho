@@ -14,3 +14,5 @@ set (INCLUDE_DIRS ../../ThirdParty/Assimp/include ${CMAKE_CURRENT_BINARY_DIR}/..
 
 # Setup target
 setup_executable (TOOL)
+
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "Tools")

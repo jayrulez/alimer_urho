@@ -16,3 +16,5 @@ define_source_files ()
 
 # Setup target
 setup_executable (TOOL)
+
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "Tools")

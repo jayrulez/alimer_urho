@@ -85,3 +85,5 @@ list (APPEND LIBS LZ4)
 # Setup target
 setup_executable (TOOL)
 adjust_target_name ()   # Remove postfix from the executable/binary name
+
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "Tools")

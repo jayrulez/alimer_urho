@@ -104,10 +104,6 @@ CTestTestfile.cmake
 *.pch/
 *.pch.*
 
-# Custom rake tasks
-/.rake/
-.rake_t_cache
-
 # Misc.
 configure*
 *~

@@ -36,3 +36,5 @@ if (NOT IOS AND NOT TVOS AND NOT ANDROID AND NOT WEB AND NOT CMAKE_BINARY_DIR ST
         create_symlink (${CMAKE_SOURCE_DIR}/bin/${FILE} ${CMAKE_BINARY_DIR}/bin/${FILE} FALLBACK_TO_COPY)
     endforeach ()
 endif ()
+
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "Tools")

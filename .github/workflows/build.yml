@@ -56,7 +56,10 @@ jobs:
           libxinerama-dev \
           libxcursor-dev \
           libxi-dev \
-          libxext-dev
+          libxext-dev \
+          libegl1-mesa-dev \
+          libgl1-mesa-dev \
+          libgles2-mesa-dev
 
     - uses: lukka/get-cmake@latest
 

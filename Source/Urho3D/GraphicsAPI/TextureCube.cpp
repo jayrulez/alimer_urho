@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -21,17 +22,19 @@
 #pragma warning(disable:4355)
 #endif
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
-static const char* cubeMapLayoutNames[] = {
-    "horizontal",
-    "horizontalnvidia",
-    "horizontalcross",
-    "verticalcross",
-    "blender",
-    nullptr
-};
+namespace
+{
+    static const char* cubeMapLayoutNames[] = {
+        "horizontal",
+        "horizontalnvidia",
+        "horizontalcross",
+        "verticalcross",
+        "blender",
+        nullptr
+    };
+}
 
 static SharedPtr<Image> GetTileImage(Image* src, int tileX, int tileY, int tileWidth, int tileHeight)
 {
@@ -340,11 +343,6 @@ void TextureCube::OnDeviceLost()
         return OnDeviceLost_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceLost_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return OnDeviceLost_D3D11();
@@ -358,11 +356,6 @@ void TextureCube::OnDeviceReset()
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return OnDeviceReset_OGL();
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return OnDeviceReset_D3D9();
 #endif
 
 #ifdef URHO3D_D3D11
@@ -380,11 +373,6 @@ void TextureCube::Release()
         return Release_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Release_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Release_D3D11();
@@ -398,11 +386,6 @@ bool TextureCube::SetData(CubeMapFace face, unsigned level, int x, int y, int wi
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return SetData_OGL(face, level, x, y, width, height, data);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetData_D3D9(face, level, x, y, width, height, data);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -422,11 +405,6 @@ bool TextureCube::SetData(CubeMapFace face, Deserializer& source)
         return SetData_OGL(face, source);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetData_D3D9(face, source);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return SetData_D3D11(face, source);
@@ -442,11 +420,6 @@ bool TextureCube::SetData(CubeMapFace face, Image* image, bool useAlpha)
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return SetData_OGL(face, image, useAlpha);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetData_D3D9(face, image, useAlpha);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -466,11 +439,6 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
         return GetData_OGL(face, level, dest);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return GetData_D3D9(face, level, dest);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return GetData_D3D11(face, level, dest);
@@ -488,17 +456,10 @@ bool TextureCube::Create()
         return Create_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Create_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Create_D3D11();
 #endif
 
     return {}; // Prevent warning
-}
-
 }

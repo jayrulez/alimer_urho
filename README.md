@@ -1,19 +1,13 @@
-![Urho3D logo](https://raw.githubusercontent.com/urho3d/Urho3D/master/bin/Data/Textures/LogoLarge.png)
+[![Build status](https://github.com/amerkoleci/alimer_urho/workflows/Build/badge.svg)](https://github.com/amerkoleci/alimer_urho/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/amerkoleci/alimer/blob/main/LICENSE)
 
-# Urho3D
+**Alimer** is a cross-platform 2D and 3D game engin written in C++17, started as fork of [Urho3D](http://urho3d.github.io/). 
 
-[![CI/CD](https://github.com/urho3d/Urho3D/workflows/CI/CD/badge.svg)](https://github.com/urho3d/Urho3D/actions?query=workflow%3ACI%2FCD)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/4954/badge.svg)](https://scan.coverity.com/projects/urho3d-urho3d)
-
-**Urho3D** is a free lightweight, cross-platform 2D and 3D game engine implemented in C++ and released under the MIT license. Greatly inspired by OGRE and Horde3D.
-
-Main website: [https://urho3d.io/](https://urho3d.io/)
+### Features
+- Cross platform support.
 
 ## License
-Licensed under the MIT license, see [LICENSE](https://github.com/urho3d/Urho3D/blob/master/LICENSE) for details.
-
-## Contributing
-Before making pull requests, please read the [Contribution checklist](https://urho3d.io/documentation/HEAD/_contribution_checklist.html) and [Coding conventions](https://urho3d.io/documentation/HEAD/_coding_conventions.html) pages from the documentation.
+Licensed under the MIT license, see [LICENSE](https://github.com/amerkoleci/alimer_urho/blob/main/LICENSE) for details.
 
 ## Credits
 
@@ -83,29 +77,3 @@ IBL textures from HDRLab's sIBL Archive.
 Dieselpunk Moto model by allexandr007.
 Mutant & Kachujin models from Mixamo.
 License / copyright information included with the assets as necessary. All other assets (including shaders) by Urho3D authors and licensed similarly as the engine itself.
-
-## Documentation
-Urho3D classes have been sparsely documented using Doxygen notation. To
-generate documentation into the "Docs" subdirectory, open the Doxyfile in the
-"Docs" subdirectory with doxywizard and click "Run doxygen" from the "Run" tab.
-Get Doxygen from http://www.doxygen.org & Graphviz from http://www.graphviz.org.
-See section "Documentation build" below on how to automate documentation
-generation as part of the build process.
-
-The documentation is also available online at
-  https://urho3d.io/documentation/HEAD/index.html
-
-Latest documentation: <https://rurho3d.github.io>
-
-Documentation on how to build Urho3D:
-  https://urho3d.io/documentation/HEAD/_building.html
-Documentation on how to use Urho3D as external library
-  https://urho3d.io/documentation/HEAD/_using_library.html
-
-Replace HEAD with a specific release version in the above links to obtain the
-documentation pertinent to the specified release. Alternatively, use the
-document-switcher in the documentation website to do so.
-
-## History
-The change history is available online at
-  https://urho3d.io/documentation/HEAD/_history.html

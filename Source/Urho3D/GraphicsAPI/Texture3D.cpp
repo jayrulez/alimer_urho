@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -17,11 +18,10 @@
 
 #include "../DebugNew.h"
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
-Texture3D::Texture3D(Context* context) :
-    Texture(context)
+Texture3D::Texture3D(Context* context)
+    : Texture(context)
 {
 #ifdef URHO3D_OPENGL
 #ifndef GL_ES_VERSION_2_0
@@ -200,11 +200,6 @@ void Texture3D::Release()
         return Release_OGL();
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return Release_D3D9();
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return Release_D3D11();
@@ -218,11 +213,6 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return SetData_OGL(level, x, y, z, width, height, depth, data);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetData_D3D9(level, x, y, z, width, height, depth, data);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -242,11 +232,6 @@ bool Texture3D::SetData(Image* image, bool useAlpha)
         return SetData_OGL(image, useAlpha);
 #endif
 
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return SetData_D3D9(image, useAlpha);
-#endif
-
 #ifdef URHO3D_D3D11
     if (gapi == GAPI_D3D11)
         return SetData_D3D11(image, useAlpha);
@@ -262,11 +247,6 @@ bool Texture3D::GetData(unsigned level, void* dest) const
 #ifdef URHO3D_OPENGL
     if (gapi == GAPI_OPENGL)
         return GetData_OGL(level, dest);
-#endif
-
-#ifdef URHO3D_D3D9
-    if (gapi == GAPI_D3D9)
-        return GetData_D3D9(level, dest);
 #endif
 
 #ifdef URHO3D_D3D11
@@ -292,6 +272,4 @@ bool Texture3D::Create()
 #endif
 
     return {}; // Prevent warning
-}
-
 }

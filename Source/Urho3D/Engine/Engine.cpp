@@ -72,13 +72,15 @@ typedef struct _CrtMemBlockHeader
 } _CrtMemBlockHeader;
 #endif
 
+using namespace Urho3D;
+
 namespace Urho3D
 {
+    extern const char* logLevelPrefixes[];
+}
 
-extern const char* logLevelPrefixes[];
-
-Engine::Engine(Context* context) :
-    Object(context),
+Engine::Engine(Context* context)
+    : Object(context),
     timeStep_(0.0f),
     timeStepSmoothing_(2),
     minFps_(10),
@@ -166,12 +168,11 @@ bool Engine::Initialize(const VariantMap& parameters)
 
         // Try to set any possible graphics API as default
 
-#ifdef URHO3D_OPENGL
-        gapi = GAPI_OPENGL;
-#endif
 
-#ifdef URHO3D_D3D11
+#if defined(URHO3D_D3D11)
         gapi = GAPI_D3D11;
+#elif defined(URHO3D_OPENGL)
+        gapi = GAPI_OPENGL;
 #endif
 
         // Use command line parameters
@@ -673,8 +674,8 @@ void Engine::DumpMemory()
     _CrtMemState state;
     _CrtMemCheckpoint(&state);
     _CrtMemBlockHeader* block = state.pBlockHeader;
-    unsigned total = 0;
-    unsigned blocks = 0;
+    size_t total = 0;
+    uint32_t blocks = 0;
 
     for (;;)
     {
@@ -1021,6 +1022,4 @@ void Engine::DoExit()
 #if defined(__EMSCRIPTEN__) && defined(URHO3D_TESTING)
     emscripten_force_exit(EXIT_SUCCESS);    // Some how this is required to signal emrun to stop
 #endif
-}
-
 }
