@@ -36,10 +36,6 @@
 #include "../Core/Variant.h"
 #include "../Core/WorkQueue.h"
 
-#ifdef URHO3D_DATABASE
-#include "../Database/Database.h"
-#endif
-
 #include "../Engine/Console.h"
 #include "../Engine/DebugHud.h"
 #include "../Engine/Engine.h"

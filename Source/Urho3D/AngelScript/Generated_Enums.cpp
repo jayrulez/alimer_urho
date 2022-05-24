@@ -1901,13 +1901,6 @@ void ASRegisterGeneratedEnums(asIScriptEngine* engine)
     engine->RegisterEnumValue("WrapMode", "WM_ONCE", WM_ONCE);
     engine->RegisterEnumValue("WrapMode", "WM_CLAMP", WM_CLAMP);
 
-#ifdef URHO3D_DATABASE
-    // enum DBAPI | File: ../Database/Database.h
-    engine->RegisterEnum("DBAPI");
-    engine->RegisterEnumValue("DBAPI", "DBAPI_SQLITE", DBAPI_SQLITE);
-    engine->RegisterEnumValue("DBAPI", "DBAPI_ODBC", DBAPI_ODBC);
-#endif
-
 #ifdef URHO3D_NAVIGATION
     // enum CrowdAgentRequestedTarget | File: ../Navigation/CrowdAgent.h
     engine->RegisterEnum("CrowdAgentRequestedTarget");

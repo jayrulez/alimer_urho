@@ -4988,33 +4988,6 @@ static void Register_WorkQueue(asIScriptEngine* engine)
     #endif
 }
 
-#ifdef URHO3D_DATABASE
-
-// explicit Database::Database(Context* context)
-static Database* Database__Database_Contextstar()
-{
-    Context* context = GetScriptContext();
-    return new Database(context);
-}
-
-// class Database | File: ../Database/Database.h
-static void Register_Database(asIScriptEngine* engine)
-{
-    // explicit Database::Database(Context* context)
-    engine->RegisterObjectBehaviour("Database", asBEHAVE_FACTORY, "Database@+ f()", AS_FUNCTION(Database__Database_Contextstar) , AS_CALL_CDECL);
-
-    RegisterSubclass<Object, Database>(engine, "Object", "Database");
-    RegisterSubclass<RefCounted, Database>(engine, "RefCounted", "Database");
-
-    RegisterMembers_Database<Database>(engine, "Database");
-
-    #ifdef REGISTER_CLASS_MANUAL_PART_Database
-        REGISTER_CLASS_MANUAL_PART_Database();
-    #endif
-}
-
-#endif // def URHO3D_DATABASE
-
 #ifdef URHO3D_NETWORK
 
 // class Connection | File: ../Network/Connection.h
@@ -8621,10 +8594,6 @@ void ASRegisterGeneratedClasses(asIScriptEngine* engine)
     Register_View(engine);
     Register_Viewport(engine);
     Register_WorkQueue(engine);
-
-#ifdef URHO3D_DATABASE
-    Register_Database(engine);
-#endif
 
 #ifdef URHO3D_NETWORK
     Register_Connection(engine);

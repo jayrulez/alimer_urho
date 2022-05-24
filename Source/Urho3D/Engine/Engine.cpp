@@ -29,9 +29,6 @@
 #ifdef URHO3D_NETWORK
 #include "../Network/Network.h"
 #endif
-#ifdef URHO3D_DATABASE
-#include "../Database/Database.h"
-#endif
 #ifdef URHO3D_PHYSICS
 #include "../Physics/PhysicsWorld.h"
 #include "../Physics/RaycastVehicle.h"
@@ -120,9 +117,7 @@ Engine::Engine(Context* context)
 #ifdef URHO3D_NETWORK
     context_->RegisterSubsystem(new Network(context_));
 #endif
-#ifdef URHO3D_DATABASE
-    context_->RegisterSubsystem(new Database(context_));
-#endif
+
     context_->RegisterSubsystem(new Input(context_));
     context_->RegisterSubsystem(new Audio(context_));
     context_->RegisterSubsystem(new UI(context_));

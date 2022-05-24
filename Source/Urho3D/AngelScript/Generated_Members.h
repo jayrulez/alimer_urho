@@ -12789,41 +12789,6 @@ template <class T> void RegisterMembers_WorkQueue(asIScriptEngine* engine, const
     #endif
 }
 
-#ifdef URHO3D_DATABASE
-
-// class Database | File: ../Database/Database.h
-template <class T> void RegisterMembers_Database(asIScriptEngine* engine, const char* className)
-{
-    RegisterMembers_Object<T>(engine, className);
-
-    // DbConnection* Database::Connect(const String& connectionString)
-    engine->RegisterObjectMethod(className, "DbConnection@+ Connect(const String&in)", AS_METHODPR(T, Connect, (const String&), DbConnection*), AS_CALL_THISCALL);
-
-    // void Database::Disconnect(DbConnection* connection)
-    engine->RegisterObjectMethod(className, "void Disconnect(DbConnection@+)", AS_METHODPR(T, Disconnect, (DbConnection*), void), AS_CALL_THISCALL);
-
-    // unsigned Database::GetPoolSize() const
-    engine->RegisterObjectMethod(className, "uint GetPoolSize() const", AS_METHODPR(T, GetPoolSize, () const, unsigned), AS_CALL_THISCALL);
-    engine->RegisterObjectMethod(className, "uint get_poolSize() const", AS_METHODPR(T, GetPoolSize, () const, unsigned), AS_CALL_THISCALL);
-
-    // bool Database::IsPooling() const
-    engine->RegisterObjectMethod(className, "bool IsPooling() const", AS_METHODPR(T, IsPooling, () const, bool), AS_CALL_THISCALL);
-    engine->RegisterObjectMethod(className, "bool get_pooling() const", AS_METHODPR(T, IsPooling, () const, bool), AS_CALL_THISCALL);
-
-    // void Database::SetPoolSize(unsigned poolSize)
-    engine->RegisterObjectMethod(className, "void SetPoolSize(uint)", AS_METHODPR(T, SetPoolSize, (unsigned), void), AS_CALL_THISCALL);
-    engine->RegisterObjectMethod(className, "void set_poolSize(uint)", AS_METHODPR(T, SetPoolSize, (unsigned), void), AS_CALL_THISCALL);
-
-    // static DBAPI Database::GetAPI()
-    engine->SetDefaultNamespace(className);engine->RegisterGlobalFunction("DBAPI GetAPI()", AS_FUNCTIONPR(T::GetAPI, (), DBAPI), AS_CALL_CDECL);engine->SetDefaultNamespace("");
-
-    #ifdef REGISTER_MEMBERS_MANUAL_PART_Database
-        REGISTER_MEMBERS_MANUAL_PART_Database();
-    #endif
-}
-
-#endif // def URHO3D_DATABASE
-
 #ifdef URHO3D_NETWORK
 
 // class Connection | File: ../Network/Connection.h

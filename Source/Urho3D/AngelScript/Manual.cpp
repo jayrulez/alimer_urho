@@ -64,11 +64,6 @@ void ASRegisterManualFirst_IK(asIScriptEngine* engine);
 void ASRegisterManualLast_IK(asIScriptEngine* engine);
 #endif
 
-#ifdef URHO3D_DATABASE
-void ASRegisterManualFirst_Database(asIScriptEngine* engine);
-void ASRegisterManualLast_Database(asIScriptEngine* engine);
-#endif
-
 // This function is called before ASRegisterGenerated()
 void ASRegisterManualFirst(asIScriptEngine* engine)
 {
@@ -118,10 +113,6 @@ void ASRegisterManualFirst(asIScriptEngine* engine)
 #ifdef URHO3D_IK
     ASRegisterManualFirst_IK(engine);
 #endif
-
-#ifdef URHO3D_DATABASE
-    ASRegisterManualFirst_Database(engine);
-#endif
 }
 
 // This function is called after ASRegisterGenerated()
@@ -154,10 +145,6 @@ void ASRegisterManualLast(asIScriptEngine* engine)
 
 #ifdef URHO3D_IK
     ASRegisterManualLast_IK(engine);
-#endif
-
-#ifdef URHO3D_DATABASE
-    ASRegisterManualLast_Database(engine);
 #endif
 }
 

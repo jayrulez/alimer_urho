@@ -723,11 +723,6 @@ void ASRegisterGeneratedObjectTypes(asIScriptEngine* engine)
     // class WorkQueue | File: ../Core/WorkQueue.h
     engine->RegisterObjectType("WorkQueue", 0, asOBJ_REF);
 
-#ifdef URHO3D_DATABASE
-    // class Database | File: ../Database/Database.h
-    engine->RegisterObjectType("Database", 0, asOBJ_REF);
-#endif
-
 #ifdef URHO3D_NETWORK
     // class Connection | File: ../Network/Connection.h
     engine->RegisterObjectType("Connection", 0, asOBJ_REF);
