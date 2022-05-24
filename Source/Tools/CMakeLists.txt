@@ -40,17 +40,6 @@ if (CMAKE_CROSSCOMPILING)
         endif ()
         install (PROGRAMS ${CMAKE_BINARY_DIR}/bin/tool/PackageTool DESTINATION ${DEST_RUNTIME_DIR}/tool)
     endif ()
-    if (URHO3D_GENERATEBINDINGS)
-        ExternalProject_Add (BindingGenerator
-            SOURCE_DIR ${CMAKE_SOURCE_DIR}/Source/Tools/BindingGenerator
-            CMAKE_ARGS -D URHO3D_DEPLOYMENT_TARGET=generic -D DEST_RUNTIME_DIR=${CMAKE_BINARY_DIR}/bin/tool -D BAKED_CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR} -D BAKED_CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR} -D CMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
-            ${ALTERNATE_COMMAND})
-        add_make_clean_files (${CMAKE_BINARY_DIR}/bin/tool/BindingGenerator)
-        if (CMAKE_HOST_WIN32 AND NOT HAS_MKLINK)
-            add_dependencies (BindingGenerator Urho3D)
-        endif ()
-        install (PROGRAMS ${CMAKE_BINARY_DIR}/bin/tool/BindingGenerator DESTINATION ${DEST_RUNTIME_DIR}/tool)
-    endif ()
 endif ()
 
 if (URHO3D_TOOLS)
@@ -67,8 +56,4 @@ if (URHO3D_TOOLS)
 elseif (NOT CMAKE_CROSSCOMPILING AND URHO3D_PACKAGING)
     # PackageTool target is required but we are not cross-compiling, so build it as per normal
     add_subdirectory (PackageTool)
-endif ()
-
-if (NOT CMAKE_CROSSCOMPILING AND URHO3D_GENERATEBINDINGS)
-    add_subdirectory (BindingGenerator)
 endif ()

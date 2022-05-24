@@ -154,7 +154,6 @@ A number of build options can be defined when invoking the build scripts or when
 |URHO3D_MACOSX_BUNDLE |0|Use MACOSX_BUNDLE when setting up macOS executable targets (macOS platform only)|
 |URHO3D_LIB_TYPE      |STATIC|Specify Urho3D library type, possible values are STATIC (default) and SHARED (not available for Emscripten)|
 |URHO3D_SCP_TO_TARGET |-|Use scp to transfer executables to target system (RPI and generic ARM cross-compiling build only), SSH digital key must be setup first for this to work, typical value has a pattern of usr@tgt:remote-loc|
-|URHO3D_GENERATEBINDINGS|0|Enable script API binding generation|
 |URHO3D_USE_LIB64_RPM |0|Enable 64-bit RPM CPack generator using /usr/lib64 and disable all other generators (Debian-based host only, which uses /usr/lib by default)|
 |URHO3D_USE_LIB_DEB   |0|Enable 64-bit DEB CPack generator using /usr/lib and disable all other generators (Redhat-based host only, which uses /usr/lib64 by default)|
 |URHO3D_HOME          |-|Path to Urho3D build tree or SDK installation location (downstream project only)|
@@ -346,16 +345,6 @@ Urho3D should be built as a shared library if your application consists of multi
 If "URHO3D_DOCS" or "URHO3D_DOCS_QUIET" build option is set then a normal build would not only build Urho3D binaries but also Urho3D documentation automatically. If the option is not set then the documentation can still be built by manually invoking 'make doc' command or using its equivalent built-in target in IDE.
 
 The additional prerequisite for documentation build is Doxygen. Also Graphviz (optional) if you wish to generate graphical diagrams in the documentation. MSVC users on Windows host system may install HTML Help Workshop (optional) in order to get the compressed help file (*.chm).  When optional tool is not available in the host system, the corresponding build process is skipped accordingly. The internal host tools to dump the \ref ScriptAPI "AngelScript API" for the default \ref Script "scripting" subsystem and the \ref LuaScriptAPI "LuaScript API" (when the LuaScript subsystem is also enabled) are being built at the same time when all the native tools are built. When the build tree is being configured not to build any host tools then the 'doc' target will simply instruct Doxygen to process the existing API dump files that are already pre-generated in the repository.
-
-\section Building_Clang_tools Clang-tools build (EXPERIMENTAL)
-
-If "URHO3D_CLANG_TOOLS" build option is set then CMake would generate a special build tree for the purpose of developing the Clang-tools. Before doing this, the development software package of LLVM/Clang version 3.9.0 must be already installed in the host system. Alternatively, you can download LLVM/Clang source files from Clang's SVN repo, build and install it into the host system. If it is not installed in a system-wide installation location then use the LLVM_CLANG_ROOT environment variable to point to the root path of this custom location (the root is the parent directory containing the bin, lib, include and share subdirectories). You may want to follow the [Clang's Getting Started instruction](http://clang.llvm.org/get_started.html) to guide you through this.
-
-Perhaps the easiest way to get Clang installed is by using Emscripten-SDK. If you have already built Emscripten-SDK in your host system then you can also use the SDK to install the Fastcomp/Clang by navigating to the Fastcomp/Clang build tree (e.g. emsdk_portable/clang/fastcomp/build_master_64) and issuing a 'make install' command. However, Emscripten-SDK does not automatically checkout "extra Clang tools", so before issuing a 'make install' you may want to take a step back to manually checkout the "extra Clang tools" into the corresponding subdirectory in the Fastcomp/Clang source tree (e.g. emsdk_portable/clang/fastcomp/src/tools/clang/tools/extra), then rebuild and install as usual. Using Fastcomp/Clang is fine for our purpose because we are only interested in using Clang as 3rd-party library instead of as compiler.
-
-A special note to Linux users, install the development software package for 'libedit' when you want full command line interface features like command history and command editing in clang-query tool. Install it before generating any of the LLVM/Clang or Fastcomp/Clang build tree.
-
-Check the Source/Clang-Tools/CMakeLists.txt to get the list of targets currently available or under development. Normal build targets won't work properly in this special build tree. See also https://github.com/urho3d/Urho3D/issues/887 to find out more about the current development plan and leave a comment there if you would like to help to contribute the development.
 
 \section Building_Shaders Compiling Direct3D shaders
 
