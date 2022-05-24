@@ -198,14 +198,12 @@ if (CMAKE_PROJECT_NAME STREQUAL Urho3D)
     option (URHO3D_DOCS "Generate documentation as part of normal build")
     option (URHO3D_DOCS_QUIET "Generate documentation as part of normal build, suppress generation process from sending anything to stdout")
     option (URHO3D_PCH "Enable PCH support" TRUE)
-    cmake_dependent_option (URHO3D_DATABASE_ODBC "Enable Database support with ODBC, requires vendor-specific ODBC driver" FALSE "NOT IOS AND NOT TVOS AND NOT ANDROID AND NOT WEB;NOT MSVC OR NOT MSVC_VERSION VERSION_LESS 1900" FALSE)
-    option (URHO3D_DATABASE_SQLITE "Enable Database support with SQLite embedded")
     # Enable file watcher support for automatic resource reloads by default.
     option (URHO3D_FILEWATCHER "Enable filewatcher support" TRUE)
     option (URHO3D_TESTING "Enable testing support")
     # By default this option is off (i.e. we use the MSVC dynamic runtime), this can be switched on if using Urho3D as a STATIC library
     cmake_dependent_option (URHO3D_STATIC_RUNTIME "Use static C/C++ runtime libraries and eliminate the need for runtime DLLs installation (VS only)" FALSE "MSVC" FALSE)
-    if (((URHO3D_LUA AND NOT URHO3D_LUAJIT) OR URHO3D_DATABASE_SQLITE) AND NOT ANDROID AND NOT IOS AND NOT TVOS AND NOT WEB AND NOT WIN32)
+    if (((URHO3D_LUA AND NOT URHO3D_LUAJIT)) AND NOT ANDROID AND NOT IOS AND NOT TVOS AND NOT WEB AND NOT WIN32)
         # Find GNU Readline development library for Lua interpreter and SQLite's isql
         find_package (Readline)
     endif ()
@@ -350,13 +348,7 @@ if (RPI)
     set_property (CACHE RPI_ABI PROPERTY STRINGS ${RPI_SUPPORTED_ABIS})
 endif ()
 
-if (URHO3D_DATABASE_ODBC)
-    set (URHO3D_DATABASE_SQLITE 0)
-    unset (URHO3D_DATABASE_SQLITE CACHE)
-endif ()
-if (URHO3D_DATABASE_SQLITE OR URHO3D_DATABASE_ODBC)
-    set (URHO3D_DATABASE 1)
-endif ()
+
 if (URHO3D_LUAJIT)
     set (JIT JIT)
     set (URHO3D_LUA 1)
@@ -398,14 +390,9 @@ if (NOT URHO3D_LIB_TYPE STREQUAL SHARED)
     endif ()
 endif ()
 
-if (URHO3D_DATABASE_ODBC)
-    find_package (ODBC REQUIRED)
-endif ()
-
 # Define preprocessor macros (for building the Urho3D library) based on the configured build options
 foreach (OPT
         URHO3D_ANGELSCRIPT
-        URHO3D_DATABASE
         URHO3D_FILEWATCHER
         URHO3D_IK
         URHO3D_LOGGING
@@ -917,11 +904,6 @@ macro (define_dependency_libs TARGET)
         endif ()
         if (DIRECT3D_LIBRARIES)
             list (APPEND LIBS ${DIRECT3D_LIBRARIES})
-        endif ()
-
-        # Database
-        if (URHO3D_DATABASE_ODBC)
-            list (APPEND LIBS ${ODBC_LIBRARIES})
         endif ()
 
         # This variable value can either be 'Urho3D' target or an absolute path to an actual static/shared Urho3D library or empty (if we are building the library itself)

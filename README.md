@@ -17,7 +17,6 @@ Uses the following open-source and third-party libraries:
 
 - [stb](https://github.com/nothings/stb): Single-file public domain (or MIT licensed) libraries
 - AngelScript 2.35.1 WIP (http://www.angelcode.com/angelscript)
-- Boost 1.64.0 (http://www.boost.org) - only used for AngelScript generic bindings
 - Box2D 2.4.1+ (https://box2d.org)
 - Bullet 3.06+ (http://www.bulletphysics.org)
 - Civetweb 1.7 (https://github.com/civetweb/civetweb)
@@ -28,13 +27,11 @@ Uses the following open-source and third-party libraries:
 - Lua 5.1 (https://www.lua.org)
 - LuaJIT 2.1.0+ (http://www.luajit.org)
 - LZ4 1.7.5 (https://github.com/lz4/lz4)
-- nanodbc 2.12.4+ (https://lexicalunit.github.io/nanodbc)
 - Open Asset Import Library 4.1.0 (http://assimp.sourceforge.net)
 - pugixml 1.10+ (http://pugixml.org)
 - rapidjson 1.1.0 (https://github.com/miloyip/rapidjson)
 - Recast/Detour (https://github.com/recastnavigation/recastnavigation)
 - SDL 2.0.10+ (https://www.libsdl.org)
-- SQLite 3.36.0 (https://www.sqlite.org)
 - StanHull (https://codesuppository.blogspot.com/2006/03/john-ratcliffs-code-suppository-blog.html)
 - tolua++ 1.0.93 (defunct - http://www.codenix.com/~tolua)
 - WebP (https://chromium.googlesource.com/webm/libwebp)
