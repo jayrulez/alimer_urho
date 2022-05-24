@@ -68,7 +68,7 @@ To run Urho3D, the minimum system requirements are:
 
 SIMD requirement can be eliminated by disabling the use of SIMD instruction set, see URHO3D_SSE build option below. For Linux platform using GCC/Clang compiler toolchain, the MMX and 3DNow! extensions can be enabled for older CPUs by using URHO3D_MMX and URHO3D_3DNOW build options when the option is available (they are disabled by default). The MMX and SSE extensions on x86_64 ABI are always enabled, so the URHO3D_MMX and URHO3D_SSE build option do not exist on x86_64 ABI (they are always on). Also note that MMX extension is effectively enabled when 3DNow! or SSE extension is enabled, so disabling URHO3D_MMX build option in this case has no effect.
 
-The NEON instruction set will be used by default whenever it is available. See the ANDROID_ABI and RPI_ABI build options for more detail for Android and Raspberry-Pi platforms, respectively. The NEON instruction set is always used on iOS and tVOS platforms.
+The NEON instruction set will be used by default whenever it is available. See the ANDROID_ABI build options for more detail for Android and Raspberry-Pi platforms, respectively. The NEON instruction set is always used on iOS and tVOS platforms.
 
 CMake (https://www.cmake.org) is required to configure and generate the Urho3D project build tree. The minimum required version is 3.10.2. However, it is recommended to use the latest CMake version available, especially when targeting Apple platforms using its latest Xcode version available. This is because Apple is known to change the internal working of Xcode with little regards to other third party build tools, such as CMake.
 
@@ -103,7 +103,6 @@ A number of build options can be defined when invoking the build scripts or when
 |Build Option         |Value|Description          |
 |---------------------|-----|---------------------|
 |ARM                  |0|Configure project using ARM cross-compiler toolchain (cmake_generic.sh only), cmake-gui users need to specify ARM toolchain file for cross-compiling explicitly|
-|RPI                  |0|Configure project using Raspberry Pi cross-compiler toolchain (cmake_generic.sh only), cmake-gui users need to specify RPI toolchain file for cross-compiling explicitly|
 |MINGW                |0|Configure project using MinGW (32-bit or 64-bit) cross-compiler toolchain (cmake_generic.bat and cmake_generic.sh only), cmake-gui users need to specify MinGW toolchain file for cross-compiling explicitly|
 |WEB                  |0|Configure project using Emscripten cross-compiler toolchain (cmake_generic.bat and cmake_generic.sh only), cmake-gui users need to specify Emscripten toolchain file for cross-compiling explicitly|
 |IOS                  |0|Configure project for targeting iOS platform (cmake_generic.sh and cmake-gui only)|
@@ -126,8 +125,8 @@ A number of build options can be defined when invoking the build scripts or when
 |URHO3D_URHO2D        |1|Enable 2D rendering support|
 |URHO3D_PLAYER        |1|Build Urho3D script player|
 |URHO3D_SAMPLES       |1|Build sample applications|
-|URHO3D_TOOLS         |1|Build tools (native, RPI, and ARM on Linux only)|
-|URHO3D_EXTRAS        |0|Build extras (native, RPI, and ARM on Linux only)|
+|URHO3D_TOOLS         |1|Build tools (native, and ARM on Linux only)|
+|URHO3D_EXTRAS        |0|Build extras (native, and ARM on Linux only)|
 |URHO3D_DOCS          |0|Generate documentation as part of normal build (the 'doc' builtin target can be used to generate documentation regardless of this option's value)|
 |URHO3D_DOCS_QUIET    |0|Generate documentation as part of normal build, suppress generation process from sending anything to stdout|
 |URHO3D_PCH           |1|Enable PCH support|
@@ -153,7 +152,6 @@ A number of build options can be defined when invoking the build scripts or when
 |URHO3D_WIN32_CONSOLE |0|Use console main() instead of WinMain() as entry point when setting up Windows executable targets (Windows platform only)|
 |URHO3D_MACOSX_BUNDLE |0|Use MACOSX_BUNDLE when setting up macOS executable targets (macOS platform only)|
 |URHO3D_LIB_TYPE      |STATIC|Specify Urho3D library type, possible values are STATIC (default) and SHARED (not available for Emscripten)|
-|URHO3D_SCP_TO_TARGET |-|Use scp to transfer executables to target system (RPI and generic ARM cross-compiling build only), SSH digital key must be setup first for this to work, typical value has a pattern of usr@tgt:remote-loc|
 |URHO3D_USE_LIB64_RPM |0|Enable 64-bit RPM CPack generator using /usr/lib64 and disable all other generators (Debian-based host only, which uses /usr/lib by default)|
 |URHO3D_USE_LIB_DEB   |0|Enable 64-bit DEB CPack generator using /usr/lib and disable all other generators (Redhat-based host only, which uses /usr/lib64 by default)|
 |URHO3D_HOME          |-|Path to Urho3D build tree or SDK installation location (downstream project only)|
@@ -168,9 +166,6 @@ A number of build options can be defined when invoking the build scripts or when
 |DIRECTX_INC_SEARCH_PATHS|-|Additional search paths to find DirectX headers (MinGW only)|
 |DIRECTX_LIB_SEARCH_PATHS|-|Additional search paths to find DirectX libraries (MinGW only)|
 |DIRECT3D_DLL_REDIST_SEARCH_PATHS|-|Additional search paths to find DirectX runtime DLL (MinGW only); should only be used for older MinGW version that still uses 'd3dcompiler_43.dll' or 'd3dcompiler_42.dll'.|
-|RPI_PREFIX           |-|Prefix path to Raspberry Pi cross-compiler tools (RPI cross-compiling build only)|
-|RPI_SYSROOT          |-|Path to Raspberry Pi system root (RPI cross-compiling build only)|
-|RPI_ABI              |*|Specify target ABI (RPI platform only), possible values are RPI0, RPI1, RPI2, RPI3, RPI4|
 |ARM_PREFIX           |-|Prefix path to ARM cross-compiler tools (ARM on Linux cross-compiling build only)|
 |ARM_SYSROOT          |-|Path to ARM system root (ARM on Linux cross-compiling build only)|
 |ARM_ABI_FLAGS        |-|Specify ABI compiler flags (ARM on Linux platform only); e.g. Orange-Pi Mini 2 could use '-mcpu=cortex-a7 -mfpu=neon-vfpv4'|
@@ -193,7 +188,6 @@ A native build of Urho3D has two steps:
     - Windows: cmake_vs20xx.bat, cmake_mingw.bat, cmake_codeblock.bat, cmake_codelite.bat cmake_ninja.bat, or cmake_generic.bat\n
     - macOS: cmake_xcode.sh, cmake_codeblocks.sh, cmake_codelite.sh, cmake_ninja.sh, or cmake_generic.sh\n
     - Linux: cmake_eclipse.sh, cmake_codeblocks.sh, cmake_codelite.sh, cmake_ninja.sh, or cmake_generic.sh\n
-    - Raspberry Pi: cmake_rpi.sh, cmake_eclipse.sh, cmake_codeblocks.sh, cmake_codelite.sh, cmake_ninja.sh, or cmake_generic.sh\n
 -# Use the IDE of your choice to open the CMake's generated project file or solution file in the build tree. Change the build configuration (Debug/Release) and change the built-in target to ALL_BUILD to build all the targets.\n
     - Visual Studio: open Urho3D.sln\n
     - Xcode: open Urho3D.xcodeproj\n
@@ -260,16 +254,6 @@ Run cmake_ios.sh or cmake_tvos.sh, respectively. This generates an Xcode project
 Open the Xcode project and check the properties for the Urho3D project (topmost in the Project Navigator). In Code Signing, enter your developer identity as necessary. Also ensure you have changed the built-in target to ALL_BUILD to build all the targets. Edit its build scheme to choose debug or release mode. All the samples will be built as Application Bundle, i.e. with all the resources bundled. The library and samples will be built as Mach-O universal binary consisting of multiple archs depending on the chosen platforms.
 
 You can choose one of the provided simulator to run the samples directly from the Xcode.
-
-\section Building_RaspberryPi Raspberry Pi build process
-
-For native build on Raspberry Pi itself, use the similar process for \ref Building_Native "Native build process" described above for Linux platform.
-
-For cross-compiling build on a Linux host system, firstly set the RPI_PREFIX environment variable or build option to point to your Raspberry Pi cross-compiling tool are located. You can setup the tool using <a href="http://crosstool-ng.org/">crosstool-NG</a> or just clone one from https://github.com/raspberrypi/tools. Secondly, set the RPI_SYSROOT environment variable or build option to point to your Raspbian or Pidora system root. You must install the Urho3D prerequisites software development packages for Raspberry Pi (see \ref Building_Prerequisites) in the system root before attempting to do the Urho3D cross-compiling build. You are recommended to download the Raspbian system root with Urho3D prerequisite software installed from https://github.com/urho3d/rpi-sysroot. Alternatively, if you have a fast LAN connection then you can also opt to mount the system root on your actual Raspberry Pi device to your host system via SSHFS and set the RPI_SYSROOT to use the mount point.
-
-Execute cmake_raspi.sh then go to the build tree to execute make command. You may pass the optional RPI_ABI build option to specifically target for the Raspberry Pi 2. After the build is complete, the ARM executables can be found in the build tree's "bin" subdirectory.
-
-You can also build, deploy, run/debug (as C/C++ Remote %Application) using Eclipse IDE. To do that, execute cmake_eclipse.sh with "-DRPI=1" build option set. Import the CMake generated Eclipse project in the build tree into Eclipse's workspace. Build the project as usual. Optionally, use the "URHO3D_SCP_TO_TARGET" build option to automatically deploy the ARM executables to target Raspberry Pi device as part of build process; or configure Eclipse to perform a "download to target path" in the Run/Debug configuration for C/C++ Remote %Application. Either way, you have to configure the Run/Debug configuration to let it know how to reach your target Raspberry Pi device.
 
 \section Building_GenericARM Generic ARM build process (EXPERIMENTAL)
 
@@ -358,7 +342,7 @@ The building prerequisites are understandably different for each target platform
 
 The DBE requires podman (from repository provided by your distro, recommended) or Docker-CE (from https://docs.docker.com/install/) to be installed in the host system and that's all it needs.
 
-To use the DBE, execute script/dockerized.sh in the project root directory, specify the platform name (linux|mingw|android|rpi|arm|web) as the mandatory parameter, and optionally followed by an alternative command to be invoked in the docker container. By default the command is to generate a build tree for the specified target platform and then build it. The Urho3D build options can be specified by using environment variables in the host system before executing the dockerized.sh. It could be done just in time as well, e.g. "URHO3D_LIB_TYPE=SHARED script/dockerized.sh mingw". The build artifact from DBE can be found in the usual location as the normal build environment. In fact the build artifacts should function and work as if they are built using conventional way too.
+To use the DBE, execute script/dockerized.sh in the project root directory, specify the platform name (linux|mingw|android|arm|web) as the mandatory parameter, and optionally followed by an alternative command to be invoked in the docker container. By default the command is to generate a build tree for the specified target platform and then build it. The Urho3D build options can be specified by using environment variables in the host system before executing the dockerized.sh. It could be done just in time as well, e.g. "URHO3D_LIB_TYPE=SHARED script/dockerized.sh mingw". The build artifact from DBE can be found in the usual location as the normal build environment. In fact the build artifacts should function and work as if they are built using conventional way too.
 
 The DBE is designed to be used by Urho3D project and its downstream projects which reuse Urho3D build system.
 
@@ -663,12 +647,6 @@ export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig
 c++ -c Urho3DPlayer.cpp `pkg-config --cflags Urho3D`
 c++ -o Urho3DPlayer Urho3DPlayer.o `pkg-config --libs Urho3D`
 
-# To cross-compile and link for Raspberry Pi platform
-export CC=${RPI_PREFIX}-c++
-export PKG_CONFIG_SYSROOT_DIR=${RPI_SYSROOT}
-export PKG_CONFIG_PATH=${RPI_SYSROOT}/usr/local/lib/pkgconfig
-$CC -o Urho3DPlayer Urho3DPlayer.cpp `pkg-config --cflags --libs Urho3D`
-
 # To cross-compile and link for Windows platform using MinGW cross-compiler (in Debug configuration)
 export CC=${MINGW_PREFIX}-c++
 export PKG_CONFIG_SYSROOT_DIR=${MINGW_SYSROOT}
@@ -704,17 +682,11 @@ rake make [<platform>] [<option>=<value> [<option>=<value>]] [[<platform>_]build
 
 The default <generator> when not specified is 'generic', which let CMake to detect and choose what generator is available in the host to use. The possible values are: 'codeblocks', 'eclipse', 'ninja', 'vs2015', 'vs2017', 'vs2019', 'xcode'.
 
-The default <platform> when not specified is the native platform of the build host, 'linux', 'macOS', 'win'. The other possible values are: 'android', 'web', 'ios', 'tvos', 'mingw', 'rpi'. Naturally this influences the compiler toolchain being used in the generated build tree.
+The default <platform> when not specified is the native platform of the build host, 'linux', 'macOS', 'win'. The other possible values are: 'android', 'web', 'ios', 'tvos', 'mingw'. Naturally this influences the compiler toolchain being used in the generated build tree.
 
 When using the 'rake cmake' task, the <option>=\<value> pairs are optional build options supported by our build scripts as usual. However, the format here does not expect a leading '-D' for each pair. When using the 'rake make' task, the <option>=\<value> pairs are optional build options supported by the respective build tools. For example on iOS/tvOS platform using 'xcodebuild' build tool, one could pass the '-sdk' option as follows: 'rake make ios sdk=iphonesimulator'. Note the absence of leading '-' character in the example. To build a specific built-in target in the project, use the 'target' option, e.g. 'rake make target=install'. In a multi-config project, such as Xcode project or VS solution, use the 'config' option to choose which build configuration to use, e.g. 'rake make config=Release'. For Xcode project building using 'rake make' task, you may optional install the 'xcpretty' filter to address the verbosity of the 'xcodebuild' tool from its standard output stream. On the other hand, pass the 'unfilter' option to get the output from 'xcodebuild' tool unfiltered regardless the 'xcpretty' is installed or not. You can pass the 'clean_first' option to perform a clean build. By default this task invokes the respective build tool to use all the logical CPU cores available, but you can use the 'numjobs' option to override this default.
 
-Use the 'build_tree' option to set the path to the desired build tree location. When not specified then the build tree location would be defaulted to '../<platform>-Build', relative to the project root. To avoid repeating the customized build tree locations for each platform, you can set and export them as environment variables. The '<platform_>build_tree' option takes precedence over normal 'build_tree' option. For example with these commands below, the native and RPI build tree will be generated in the ~/custom-native-Build and ~/custom-rpi-Build, respectively, and then build from there.
-
-\code
-export native_build_tree=~/custom-native-Build rpi_build_tree=~/custom-rpi-Build
-rake cmake URHO3D_LUAJIT=1 && rake make
-rake cmake rpi URHO3D_LUAJIT=1 && rake make rpi
-\endcode
+Use the 'build_tree' option to set the path to the desired build tree location. When not specified then the build tree location would be defaulted to '../<platform>-Build', relative to the project root. To avoid repeating the customized build tree locations for each platform, you can set and export them as environment variables. The '<platform_>build_tree' option takes precedence over normal 'build_tree' option. For example with these commands below, the native build tree will be generated in the ~/custom-native-Build and ~/custom-rpi-Build, respectively, and then build from there.
 
 You can in fact set and export any other key/value pair build options as environment variables to avoid repeating yourself when invoking any of our Rake tasks.
 

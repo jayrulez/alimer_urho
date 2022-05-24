@@ -496,11 +496,6 @@ if (URHO3D_LIB_TYPE STREQUAL SHARED AND ARM)
     add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} $<TARGET_FILE:${TARGET_NAME}>
         COMMENT "Stripping Urho3D shared library")
 endif ()
-if (URHO3D_SCP_TO_TARGET)
-    # Ensure SCP is the last command
-    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND scp $<TARGET_FILE:${TARGET_NAME}> ${URHO3D_SCP_TO_TARGET} || exit 0
-        COMMENT "Scp-ing Urho3D library to target system")
-endif ()
 
 if (URHO3D_FORCE_AS_MAX_PORTABILITY)
     add_definitions (-DAS_MAX_PORTABILITY)
