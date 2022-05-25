@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -14,44 +15,37 @@
 #ifndef STB_VORBIS_HEADER_ONLY
 #define STB_VORBIS_HEADER_ONLY
 #endif
-#include <STB/stb_vorbis.h>
+#include <stb_vorbis.h>
 
 #include "../DebugNew.h"
 
-namespace Urho3D
+using namespace Urho3D;
+
+namespace
 {
+    /// WAV format header.
+    struct WavHeader
+    {
+        unsigned char riffText_[4];
+        unsigned totalLength_;
+        unsigned char waveText_[4];
+        unsigned char formatText_[4];
+        unsigned formatLength_;
+        unsigned short format_;
+        unsigned short channels_;
+        unsigned frequency_;
+        unsigned avgBytes_;
+        unsigned short blockAlign_;
+        unsigned short bits_;
+        unsigned char dataText_[4];
+        unsigned dataLength_;
+    };
 
-/// WAV format header.
-struct WavHeader
-{
-    unsigned char riffText_[4];
-    unsigned totalLength_;
-    unsigned char waveText_[4];
-    unsigned char formatText_[4];
-    unsigned formatLength_;
-    unsigned short format_;
-    unsigned short channels_;
-    unsigned frequency_;
-    unsigned avgBytes_;
-    unsigned short blockAlign_;
-    unsigned short bits_;
-    unsigned char dataText_[4];
-    unsigned dataLength_;
-};
+    static constexpr uint32_t IP_SAFETY = 4;
+}
 
-static const unsigned IP_SAFETY = 4;
-
-Sound::Sound(Context* context) :
-    ResourceWithMetadata(context),
-    repeat_(nullptr),
-    end_(nullptr),
-    dataSize_(0),
-    frequency_(44100),
-    looped_(false),
-    sixteenBit_(false),
-    stereo_(false),
-    compressed_(false),
-    compressedLength_(0.0f)
+Sound::Sound(Context* context)
+    : ResourceWithMetadata(context)
 {
 }
 
@@ -355,6 +349,4 @@ void Sound::LoadParameters()
                 SetLoop((unsigned)paramElem.GetInt("start"), (unsigned)paramElem.GetInt("end"));
         }
     }
-}
-
 }

@@ -217,6 +217,10 @@ if (IOS OR TVOS)
 endif ()
 setup_library (${URHO3D_LIB_TYPE} ${EXCLUDE_FROM_ALL})
 
+target_link_libraries(${TARGET_NAME}
+    STB
+)
+
 # Generate platform specific export header file (can only be called after the target has been added)
 if (MSVC)
     set (APPENDIX "\n#pragma warning(disable: 4251)\n#pragma warning(disable: 4275)\n\n#if _MSC_VER < 1900\n#define strtoll _strtoi64\n#define strtoull _strtoui64\n#endif\n")

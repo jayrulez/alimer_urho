@@ -13587,9 +13587,6 @@ template <class T> void RegisterMembers_Image(asIScriptEngine* engine, const cha
     // bool Image::SaveTGA(const String& fileName) const
     engine->RegisterObjectMethod(className, "bool SaveTGA(const String&in) const", AS_METHODPR(T, SaveTGA, (const String&) const, bool), AS_CALL_THISCALL);
 
-    // bool Image::SaveWEBP(const String& fileName, float compression = 0.0f) const
-    engine->RegisterObjectMethod(className, "bool SaveWEBP(const String&in, float = 0.0f) const", AS_METHODPR(T, SaveWEBP, (const String&, float) const, bool), AS_CALL_THISCALL);
-
     // void Image::SetPixel(int x, int y, const Color& color)
     engine->RegisterObjectMethod(className, "void SetPixel(int, int, const Color&in)", AS_METHODPR(T, SetPixel, (int, int, const Color&), void), AS_CALL_THISCALL);
 

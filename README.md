@@ -34,7 +34,6 @@ Uses the following open-source and third-party libraries:
 - SDL 2.0.10+ (https://www.libsdl.org)
 - StanHull (https://codesuppository.blogspot.com/2006/03/john-ratcliffs-code-suppository-blog.html)
 - tolua++ 1.0.93 (defunct - http://www.codenix.com/~tolua)
-- WebP (https://chromium.googlesource.com/webm/libwebp)
 - ETCPACK (https://github.com/Ericsson/ETCPACK)
 - Tracy 0.7.6 (https://github.com/wolfpld/tracy)
 

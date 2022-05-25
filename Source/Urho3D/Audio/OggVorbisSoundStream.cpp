@@ -1,17 +1,17 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
-#include "../Audio/OggVorbisSoundStream.h"
-#include "../Audio/Sound.h"
+#include "Audio/OggVorbisSoundStream.h"
+#include "Audio/Sound.h"
 
-#include <STB/stb_vorbis.h>
+#include <stb_vorbis.h>
 
 #include "../DebugNew.h"
 
-namespace Urho3D
-{
+using namespace Urho3D;
 
 OggVorbisSoundStream::OggVorbisSoundStream(const Sound* sound)
 {
@@ -23,9 +23,9 @@ OggVorbisSoundStream::OggVorbisSoundStream(const Sound* sound)
 
     // Initialize decoder
     data_ = sound->GetData();
-    dataSize_ = sound->GetDataSize();
+    _dataSize = sound->GetDataSize();
     int error;
-    decoder_ = stb_vorbis_open_memory((unsigned char*)data_.Get(), dataSize_, &error, nullptr);
+    decoder_ = stb_vorbis_open_memory((unsigned char*)data_.Get(), _dataSize, &error, nullptr);
 }
 
 OggVorbisSoundStream::~OggVorbisSoundStream()
@@ -72,6 +72,4 @@ unsigned OggVorbisSoundStream::GetData(signed char* dest, unsigned numBytes)
     }
 
     return outBytes;
-}
-
 }
