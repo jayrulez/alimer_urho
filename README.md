@@ -16,7 +16,6 @@ Licensed under the MIT license, see [LICENSE](https://github.com/amerkoleci/alim
 Uses the following open-source and third-party libraries:
 
 - [stb](https://github.com/nothings/stb): Single-file public domain (or MIT licensed) libraries
-- AngelScript 2.35.1 WIP (http://www.angelcode.com/angelscript)
 - Box2D 2.4.1+ (https://box2d.org)
 - Bullet 3.06+ (http://www.bulletphysics.org)
 - Civetweb 1.7 (https://github.com/civetweb/civetweb)

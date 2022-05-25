@@ -123,8 +123,6 @@ include (CMakeDependentOption)
 cmake_dependent_option (IOS "Setup build for iOS platform" FALSE "XCODE" FALSE)
 cmake_dependent_option (TVOS "Setup build for tvOS platform" FALSE "XCODE" FALSE)
 cmake_dependent_option (URHO3D_64BIT "Enable 64-bit build, the default is set based on the native ABI of the chosen compiler toolchain" "${NATIVE_64BIT}" "NOT MSVC AND NOT ANDROID AND NOT (ARM AND NOT IOS) AND NOT WEB AND NOT POWERPC" "${NATIVE_64BIT}")     # Intentionally only enable the option for iOS but not for tvOS as the latter is 64-bit only
-option (URHO3D_ANGELSCRIPT "Enable AngelScript scripting support" TRUE)
-cmake_dependent_option (URHO3D_FORCE_AS_MAX_PORTABILITY "Use generic calling convention for AngelScript on any platform" FALSE "URHO3D_ANGELSCRIPT" FALSE)
 option (URHO3D_IK "Enable inverse kinematics support" TRUE)
 #option (URHO3D_LUA "Enable additional Lua scripting support" TRUE)
 unset (URHO3D_LUA CACHE)
@@ -323,7 +321,6 @@ endif ()
 
 # Define preprocessor macros (for building the Urho3D library) based on the configured build options
 foreach (OPT
-        URHO3D_ANGELSCRIPT
         URHO3D_FILEWATCHER
         URHO3D_IK
         URHO3D_LOGGING
@@ -450,9 +447,6 @@ else ()
             if (URHO3D_64BIT)
                 # aarch64 has only one valid arch so far
                 set (ARM_CFLAGS "${ARM_CFLAGS} -march=armv8-a")
-            elseif (URHO3D_ANGELSCRIPT)
-                # Angelscript seems to fail to compile using Thumb states, so force to use ARM states by default
-                set (ARM_CFLAGS "${ARM_CFLAGS} -marm")
             endif ()
             if (ARM_ABI_FLAGS)
                 # Instead of guessing all the possible ABIs, user would have to specify the ABI compiler flags explicitly via ARM_ABI_FLAGS build option
