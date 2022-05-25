@@ -1,0 +1,1 @@
+cmake -B ".\build\uwp" -S "." -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 

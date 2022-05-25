@@ -48,8 +48,10 @@ if (URHO3D_LIB_TYPE STREQUAL SHARED AND NOT WIN32 AND NOT ANDROID AND NOT IOS AN
     endif ()
 endif ()
 
+add_subdirectory (ThirdParty)
+
 # Add targets
-foreach (TARGET ETCPACK FreeType LZ4 PugiXml rapidjson SDL StanHull STB)
+foreach (TARGET ETCPACK FreeType LZ4 PugiXml rapidjson SDL StanHull)
     add_subdirectory (ThirdParty/${TARGET})
     set_property(TARGET ${TARGET} PROPERTY FOLDER "ThirdParty")
 endforeach ()

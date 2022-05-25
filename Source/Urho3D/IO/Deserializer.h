@@ -46,7 +46,7 @@ public:
 
     /// Return size.
     /// @property
-    unsigned GetSize() const { return size_; }
+    uint32_t GetSize() const { return size_; }
 
     /// Read a 64-bit integer.
     long long ReadInt64();
@@ -133,7 +133,7 @@ protected:
     /// Stream position.
     unsigned position_;
     /// Stream size.
-    unsigned size_;
+    uint32_t size_;
 };
 
 }

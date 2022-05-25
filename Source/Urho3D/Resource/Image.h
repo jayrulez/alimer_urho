@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 /// \file
 
@@ -154,10 +155,10 @@ public:
 
     /// Return number of color components.
     /// @property
-    unsigned GetComponents() const { return components_; }
+    uint32_t GetComponents() const { return _components; }
 
     /// Return pixel data.
-    unsigned char* GetData() const { return data_; }
+    uint8_t* GetData() const { return data_; }
 
     /// Return whether is compressed.
     /// @property
@@ -201,9 +202,9 @@ public:
 
 private:
     /// Decode an image using stb_image.
-    static unsigned char* GetImageData(Deserializer& source, int& width, int& height, unsigned& components);
+    static uint8_t* GetImageData(Deserializer& source, int32_t& width, int32_t& height, uint32_t& components);
     /// Free an image file's pixel data.
-    static void FreeImageData(unsigned char* pixelData);
+    static void FreeImageData(uint8_t* pixelData);
 
     /// Width.
     int width_{};
@@ -212,7 +213,7 @@ private:
     /// Depth.
     int depth_{};
     /// Number of color components.
-    unsigned components_{};
+    uint32_t _components{};
     /// Number of compressed mip levels.
     unsigned numCompressedLevels_{};
     /// Cubemap status if DDS.
@@ -224,7 +225,7 @@ private:
     /// Compressed format.
     CompressedFormat compressedFormat_{CF_NONE};
     /// Pixel data.
-    SharedArrayPtr<unsigned char> data_;
+    SharedArrayPtr<uint8_t> data_;
     /// Precalculated mip level image.
     SharedPtr<Image> nextLevel_;
     /// Next texture array or cube map image.

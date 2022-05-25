@@ -1,5 +1,6 @@
 // Copyright (c) 2008-2022 the Urho3D project
-// License: MIT
+// Copyright © Amer Koleci and Contributors.
+// Licensed under the MIT License (MIT). See LICENSE in the repository root for more information.
 
 #include "../Precompiled.h"
 
@@ -11,6 +12,7 @@
 #include "../Resource/Decompress.h"
 
 #include <SDL/SDL_surface.h>
+#define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #include <STB/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -68,134 +70,137 @@ static const unsigned DDS_DXGI_FORMAT_BC2_UNORM_SRGB = 75;
 static const unsigned DDS_DXGI_FORMAT_BC3_UNORM = 77;
 static const unsigned DDS_DXGI_FORMAT_BC3_UNORM_SRGB = 78;
 
-namespace Urho3D
+using namespace Urho3D;
+
+namespace
 {
 
-/// DirectDraw color key definition.
-struct DDColorKey
-{
-    unsigned dwColorSpaceLowValue_;
-    unsigned dwColorSpaceHighValue_;
-};
+    /// DirectDraw color key definition.
+    struct DDColorKey
+    {
+        unsigned dwColorSpaceLowValue_;
+        unsigned dwColorSpaceHighValue_;
+    };
 
-/// DirectDraw pixel format definition.
-struct DDPixelFormat
-{
-    unsigned dwSize_;
-    unsigned dwFlags_;
-    unsigned dwFourCC_;
-    union
+    /// DirectDraw pixel format definition.
+    struct DDPixelFormat
     {
-        unsigned dwRGBBitCount_;
-        unsigned dwYUVBitCount_;
-        unsigned dwZBufferBitDepth_;
-        unsigned dwAlphaBitDepth_;
-        unsigned dwLuminanceBitCount_;
-        unsigned dwBumpBitCount_;
-        unsigned dwPrivateFormatBitCount_;
-    };
-    union
-    {
-        unsigned dwRBitMask_;
-        unsigned dwYBitMask_;
-        unsigned dwStencilBitDepth_;
-        unsigned dwLuminanceBitMask_;
-        unsigned dwBumpDuBitMask_;
-        unsigned dwOperations_;
-    };
-    union
-    {
-        unsigned dwGBitMask_;
-        unsigned dwUBitMask_;
-        unsigned dwZBitMask_;
-        unsigned dwBumpDvBitMask_;
-        struct
+        unsigned dwSize_;
+        unsigned dwFlags_;
+        unsigned dwFourCC_;
+        union
         {
-            unsigned short wFlipMSTypes_;
-            unsigned short wBltMSTypes_;
-        } multiSampleCaps_;
+            unsigned dwRGBBitCount_;
+            unsigned dwYUVBitCount_;
+            unsigned dwZBufferBitDepth_;
+            unsigned dwAlphaBitDepth_;
+            unsigned dwLuminanceBitCount_;
+            unsigned dwBumpBitCount_;
+            unsigned dwPrivateFormatBitCount_;
+        };
+        union
+        {
+            unsigned dwRBitMask_;
+            unsigned dwYBitMask_;
+            unsigned dwStencilBitDepth_;
+            unsigned dwLuminanceBitMask_;
+            unsigned dwBumpDuBitMask_;
+            unsigned dwOperations_;
+        };
+        union
+        {
+            unsigned dwGBitMask_;
+            unsigned dwUBitMask_;
+            unsigned dwZBitMask_;
+            unsigned dwBumpDvBitMask_;
+            struct
+            {
+                unsigned short wFlipMSTypes_;
+                unsigned short wBltMSTypes_;
+            } multiSampleCaps_;
+        };
+        union
+        {
+            unsigned dwBBitMask_;
+            unsigned dwVBitMask_;
+            unsigned dwStencilBitMask_;
+            unsigned dwBumpLuminanceBitMask_;
+        };
+        union
+        {
+            unsigned dwRGBAlphaBitMask_;
+            unsigned dwYUVAlphaBitMask_;
+            unsigned dwLuminanceAlphaBitMask_;
+            unsigned dwRGBZBitMask_;
+            unsigned dwYUVZBitMask_;
+        };
     };
-    union
-    {
-        unsigned dwBBitMask_;
-        unsigned dwVBitMask_;
-        unsigned dwStencilBitMask_;
-        unsigned dwBumpLuminanceBitMask_;
-    };
-    union
-    {
-        unsigned dwRGBAlphaBitMask_;
-        unsigned dwYUVAlphaBitMask_;
-        unsigned dwLuminanceAlphaBitMask_;
-        unsigned dwRGBZBitMask_;
-        unsigned dwYUVZBitMask_;
-    };
-};
 
-/// DirectDraw surface capabilities.
-struct DDSCaps2
-{
-    unsigned dwCaps_;
-    unsigned dwCaps2_;
-    unsigned dwCaps3_;
-    union
+    /// DirectDraw surface capabilities.
+    struct DDSCaps2
     {
-        unsigned dwCaps4_;
-        unsigned dwVolumeDepth_;
+        unsigned dwCaps_;
+        unsigned dwCaps2_;
+        unsigned dwCaps3_;
+        union
+        {
+            unsigned dwCaps4_;
+            unsigned dwVolumeDepth_;
+        };
     };
-};
 
-struct DDSHeader10
-{
-    unsigned dxgiFormat;
-    unsigned resourceDimension;
-    unsigned miscFlag;
-    unsigned arraySize;
-    unsigned reserved;
-};
+    struct DDSHeader10
+    {
+        unsigned dxgiFormat;
+        unsigned resourceDimension;
+        unsigned miscFlag;
+        unsigned arraySize;
+        unsigned reserved;
+    };
 
-/// DirectDraw surface description.
-struct DDSurfaceDesc2
-{
-    unsigned dwSize_;
-    unsigned dwFlags_;
-    unsigned dwHeight_;
-    unsigned dwWidth_;
-    union
+    /// DirectDraw surface description.
+    struct DDSurfaceDesc2
     {
-        unsigned lPitch_;
-        unsigned dwLinearSize_;
+        unsigned dwSize_;
+        unsigned dwFlags_;
+        unsigned dwHeight_;
+        unsigned dwWidth_;
+        union
+        {
+            unsigned lPitch_;
+            unsigned dwLinearSize_;
+        };
+        union
+        {
+            unsigned dwBackBufferCount_;
+            unsigned dwDepth_;
+        };
+        union
+        {
+            unsigned dwMipMapCount_;
+            unsigned dwRefreshRate_;
+            unsigned dwSrcVBHandle_;
+        };
+        unsigned dwAlphaBitDepth_;
+        unsigned dwReserved_;
+        unsigned lpSurface_; // Do not define as a void pointer, as it is 8 bytes in a 64bit build
+        union
+        {
+            DDColorKey ddckCKDestOverlay_;
+            unsigned dwEmptyFaceColor_;
+        };
+        DDColorKey ddckCKDestBlt_;
+        DDColorKey ddckCKSrcOverlay_;
+        DDColorKey ddckCKSrcBlt_;
+        union
+        {
+            DDPixelFormat ddpfPixelFormat_;
+            unsigned dwFVF_;
+        };
+        DDSCaps2 ddsCaps_;
+        unsigned dwTextureStage_;
     };
-    union
-    {
-        unsigned dwBackBufferCount_;
-        unsigned dwDepth_;
-    };
-    union
-    {
-        unsigned dwMipMapCount_;
-        unsigned dwRefreshRate_;
-        unsigned dwSrcVBHandle_;
-    };
-    unsigned dwAlphaBitDepth_;
-    unsigned dwReserved_;
-    unsigned lpSurface_; // Do not define as a void pointer, as it is 8 bytes in a 64bit build
-    union
-    {
-        DDColorKey ddckCKDestOverlay_;
-        unsigned dwEmptyFaceColor_;
-    };
-    DDColorKey ddckCKDestBlt_;
-    DDColorKey ddckCKSrcOverlay_;
-    DDColorKey ddckCKSrcBlt_;
-    union
-    {
-        DDPixelFormat ddpfPixelFormat_;
-        unsigned dwFVF_;
-    };
-    DDSCaps2 ddsCaps_;
-    unsigned dwTextureStage_;
-};
+}
 
 bool CompressedLevel::Decompress(unsigned char* dest) const
 {
@@ -210,7 +215,7 @@ bool CompressedLevel::Decompress(unsigned char* dest) const
         DecompressImageDXT(dest, data_, width_, height_, depth_, format_);
         return true;
 
-    // ETC2 format is compatible with ETC1, so we just use the same function.
+        // ETC2 format is compatible with ETC1, so we just use the same function.
     case CF_ETC1:
     case CF_ETC2_RGB:
         DecompressImageETC(dest, data_, width_, height_, false);
@@ -302,17 +307,17 @@ bool Image::BeginLoad(Deserializer& source)
         {
         case FOURCC_DXT1:
             compressedFormat_ = CF_DXT1;
-            components_ = 3;
+            _components = 3;
             break;
 
         case FOURCC_DXT3:
             compressedFormat_ = CF_DXT3;
-            components_ = 4;
+            _components = 4;
             break;
 
         case FOURCC_DXT5:
             compressedFormat_ = CF_DXT5;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 0:
@@ -323,7 +328,7 @@ bool Image::BeginLoad(Deserializer& source)
                 return false;
             }
             compressedFormat_ = CF_RGBA;
-            components_ = 4;
+            _components = 4;
             break;
 
         default:
@@ -343,7 +348,7 @@ bool Image::BeginLoad(Deserializer& source)
         }
 
         // Calculate the size of the data
-        unsigned dataSize = 0;
+        uint32_t dataSize = 0;
         if (compressedFormat_ != CF_RGBA)
         {
             const unsigned blockSize = compressedFormat_ == CF_DXT1 ? 8 : 16; //DXT1/BC1 is 8 bytes, DXT3/BC2 and DXT5/BC3 are 16 bytes
@@ -383,7 +388,7 @@ bool Image::BeginLoad(Deserializer& source)
             currentImage->data_ = new unsigned char[dataSize];
             currentImage->cubemap_ = cubemap_;
             currentImage->array_ = array_;
-            currentImage->components_ = components_;
+            currentImage->_components = _components;
             currentImage->compressedFormat_ = compressedFormat_;
             currentImage->width_ = ddsd.dwWidth_;
             currentImage->height_ = ddsd.dwHeight_;
@@ -439,11 +444,11 @@ bool Image::BeginLoad(Deserializer& source)
                 unsigned bMask = ddsd.ddpfPixelFormat_.dwBBitMask_;
                 unsigned aMask = ddsd.ddpfPixelFormat_.dwRGBAlphaBitMask_;
                 ADJUSTSHIFT(rMask, rShiftL, rShiftR)
-                ADJUSTSHIFT(gMask, gShiftL, gShiftR)
-                ADJUSTSHIFT(bMask, bShiftL, bShiftR)
-                ADJUSTSHIFT(aMask, aShiftL, aShiftR)
+                    ADJUSTSHIFT(gMask, gShiftL, gShiftR)
+                    ADJUSTSHIFT(bMask, bShiftL, bShiftR)
+                    ADJUSTSHIFT(aMask, aShiftL, aShiftR)
 
-                SharedArrayPtr<unsigned char> rgbaData(new unsigned char[numPixels * 4]);
+                    SharedArrayPtr<unsigned char> rgbaData(new unsigned char[numPixels * 4]);
 
                 switch (sourcePixelByteSize)
                 {
@@ -550,52 +555,52 @@ bool Image::BeginLoad(Deserializer& source)
         {
         case 0x83f1:
             compressedFormat_ = CF_DXT1;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 0x83f2:
             compressedFormat_ = CF_DXT3;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 0x83f3:
             compressedFormat_ = CF_DXT5;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 0x8d64:
             compressedFormat_ = CF_ETC1;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 0x9274:
             compressedFormat_ = CF_ETC2_RGB;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 0x9278:
             compressedFormat_ = CF_ETC2_RGBA;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 0x8c00:
             compressedFormat_ = CF_PVRTC_RGB_4BPP;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 0x8c01:
             compressedFormat_ = CF_PVRTC_RGB_2BPP;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 0x8c02:
             compressedFormat_ = CF_PVRTC_RGBA_4BPP;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 0x8c03:
             compressedFormat_ = CF_PVRTC_RGBA_2BPP;
-            components_ = 4;
+            _components = 4;
             break;
 
         default:
@@ -666,53 +671,53 @@ bool Image::BeginLoad(Deserializer& source)
         {
         case 0:
             compressedFormat_ = CF_PVRTC_RGB_2BPP;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 1:
             compressedFormat_ = CF_PVRTC_RGBA_2BPP;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 2:
             compressedFormat_ = CF_PVRTC_RGB_4BPP;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 3:
             compressedFormat_ = CF_PVRTC_RGBA_4BPP;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 6:
             compressedFormat_ = CF_ETC1;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 7:
             compressedFormat_ = CF_DXT1;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 9:
             compressedFormat_ = CF_DXT3;
-            components_ = 4;
+            _components = 4;
             break;
 
         case 11:
             compressedFormat_ = CF_DXT5;
-            components_ = 4;
+            _components = 4;
             break;
 
-        // .pvr files also support ETC2 texture format.
+            // .pvr files also support ETC2 texture format.
         case 22:
             compressedFormat_ = CF_ETC2_RGB;
-            components_ = 3;
+            _components = 3;
             break;
 
         case 23:
             compressedFormat_ = CF_ETC2_RGBA;
-            components_ = 4;
+            _components = 4;
             break;
 
         default:
@@ -729,7 +734,7 @@ bool Image::BeginLoad(Deserializer& source)
         source.Seek(source.GetPosition() + metaDataSize);
         unsigned dataSize = source.GetSize() - source.GetPosition();
 
-        data_ = new unsigned char[dataSize];
+        data_ = new uint8_t[dataSize];
         width_ = width;
         height_ = height;
         numCompressedLevels_ = mipmapCount;
@@ -760,7 +765,7 @@ bool Image::BeginLoad(Deserializer& source)
             URHO3D_LOGERROR("Truncated RIFF data");
             return false;
         }
-        const uint8_t WEBP[TAG_SIZE] = {'W', 'E', 'B', 'P'};
+        const uint8_t WEBP[TAG_SIZE] = { 'W', 'E', 'B', 'P' };
         if (memcmp(fourCC, WEBP, TAG_SIZE) != 0)
         {
             // VP8_STATUS_BITSTREAM_ERROR
@@ -769,16 +774,16 @@ bool Image::BeginLoad(Deserializer& source)
         }
 
         // Read the file to buffer.
-        size_t dataSize(source.GetSize());
-        SharedArrayPtr<uint8_t> data(new uint8_t[dataSize]);
+        size_t dataSize = source.GetSize();
+        std::unique_ptr<uint8_t[]> data(new uint8_t[dataSize]);
 
-        memset(data.Get(), 0, sizeof(uint8_t) * dataSize);
+        memset(data.get(), 0, sizeof(uint8_t) * dataSize);
         source.Seek(0);
-        source.Read(data.Get(), dataSize);
+        source.Read(data.get(), dataSize);
 
         WebPBitstreamFeatures features;
 
-        if (WebPGetFeatures(data.Get(), dataSize, &features) != VP8_STATUS_OK)
+        if (WebPGetFeatures(data.get(), dataSize, &features) != VP8_STATUS_OK)
         {
             URHO3D_LOGERROR("Error reading WebP image: " + source.GetName());
             return false;
@@ -790,11 +795,11 @@ bool Image::BeginLoad(Deserializer& source)
         bool decodeError(false);
         if (features.has_alpha)
         {
-            decodeError = WebPDecodeRGBAInto(data.Get(), dataSize, pixelData.Get(), imgSize, 4 * features.width) == nullptr;
+            decodeError = WebPDecodeRGBAInto(data.get(), dataSize, pixelData.Get(), imgSize, 4 * features.width) == nullptr;
         }
         else
         {
-            decodeError = WebPDecodeRGBInto(data.Get(), dataSize, pixelData.Get(), imgSize, 3 * features.width) == nullptr;
+            decodeError = WebPDecodeRGBInto(data.get(), dataSize, pixelData.Get(), imgSize, 3 * features.width) == nullptr;
         }
         if (decodeError)
         {
@@ -843,7 +848,7 @@ bool Image::Save(Serializer& dest) const
     }
 
     int len;
-    unsigned char* png = stbi_write_png_to_mem(data_.Get(), 0, width_, height_, components_, &len);
+    unsigned char* png = stbi_write_png_to_mem(data_.Get(), 0, width_, height_, _components, &len);
     bool success = dest.Write(png, (unsigned)len) == (unsigned)len;
     free(png);      // NOLINT(hicpp-no-malloc)
     return success;
@@ -874,7 +879,7 @@ bool Image::SetSize(int width, int height, unsigned components)
 
 bool Image::SetSize(int width, int height, int depth, unsigned components)
 {
-    if (width == width_ && height == height_ && depth == depth_ && components == components_)
+    if (width == width_ && height == height_ && depth == depth_ && components == _components)
         return true;
 
     if (width <= 0 || height <= 0 || depth <= 0)
@@ -890,7 +895,7 @@ bool Image::SetSize(int width, int height, int depth, unsigned components)
     width_ = width;
     height_ = height;
     depth_ = depth;
-    components_ = components;
+    _components = components;
     compressedFormat_ = CF_NONE;
     numCompressedLevels_ = 0;
     nextLevel_.Reset();
@@ -919,10 +924,10 @@ void Image::SetPixelInt(int x, int y, int z, unsigned uintColor)
     if (!data_ || x < 0 || x >= width_ || y < 0 || y >= height_ || z < 0 || z >= depth_ || IsCompressed())
         return;
 
-    unsigned char* dest = data_ + (z * width_ * height_ + y * width_ + x) * components_;
+    unsigned char* dest = data_ + (z * width_ * height_ + y * width_ + x) * _components;
     auto* src = (unsigned char*)&uintColor;
 
-    switch (components_)
+    switch (_components)
     {
     case 4:
         dest[3] = src[3];
@@ -950,7 +955,7 @@ void Image::SetData(const unsigned char* pixelData)
         return;
     }
 
-    auto size = (size_t)width_ * height_ * depth_ * components_;
+    auto size = (size_t)width_ * height_ * depth_ * _components;
     if (pixelData)
         memcpy(data_.Get(), pixelData, size);
     else
@@ -1022,15 +1027,17 @@ bool Image::FlipHorizontal()
 
     if (!IsCompressed())
     {
-        SharedArrayPtr<unsigned char> newData(new unsigned char[width_ * height_ * components_]);
-        unsigned rowSize = width_ * components_;
+        SharedArrayPtr<uint8_t> newData(new uint8_t[width_ * height_ * _components]);
+        unsigned rowSize = width_ * _components;
 
         for (int y = 0; y < height_; ++y)
         {
             for (int x = 0; x < width_; ++x)
             {
-                for (unsigned c = 0; c < components_; ++c)
-                    newData[y * rowSize + x * components_ + c] = data_[y * rowSize + (width_ - x - 1) * components_ + c];
+                for (unsigned c = 0; c < _components; ++c)
+                {
+                    newData[y * rowSize + x * _components + c] = data_[y * rowSize + (width_ - x - 1) * _components + c];
+                }
             }
         }
 
@@ -1089,8 +1096,8 @@ bool Image::FlipVertical()
 
     if (!IsCompressed())
     {
-        SharedArrayPtr<unsigned char> newData(new unsigned char[width_ * height_ * components_]);
-        unsigned rowSize = width_ * components_;
+        SharedArrayPtr<unsigned char> newData(new unsigned char[width_ * height_ * _components]);
+        unsigned rowSize = width_ * _components;
 
         for (int y = 0; y < height_; ++y)
             memcpy(&newData[(height_ - y - 1) * rowSize], &data_[y * rowSize], rowSize);
@@ -1156,7 +1163,7 @@ bool Image::Resize(int width, int height)
         return false;
 
     /// \todo Reducing image size does not sample all needed pixels
-    SharedArrayPtr<unsigned char> newData(new unsigned char[width * height * components_]);
+    SharedArrayPtr<uint8_t> newData(new uint8_t[width * height * _components]);
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
@@ -1165,10 +1172,10 @@ bool Image::Resize(int width, int height)
             float xF = (width_ > 1) ? (float)x / (float)(width - 1) : 0.0f;
             float yF = (height_ > 1) ? (float)y / (float)(height - 1) : 0.0f;
             unsigned uintColor = GetPixelBilinear(xF, yF).ToUInt();
-            unsigned char* dest = newData + (y * width + x) * components_;
+            unsigned char* dest = newData + (y * width + x) * _components;
             auto* src = (unsigned char*)&uintColor;
 
-            switch (components_)
+            switch (_components)
             {
             case 4:
                 dest[3] = src[3];
@@ -1189,7 +1196,7 @@ bool Image::Resize(int width, int height)
     width_ = width;
     height_ = height;
     data_ = newData;
-    SetMemoryUse(width * height * depth_ * components_);
+    SetMemoryUse(width * height * depth_ * _components);
     return true;
 }
 
@@ -1211,19 +1218,19 @@ void Image::ClearInt(unsigned uintColor)
         return;
     }
 
-    if (components_ == 4)
+    if (_components == 4)
     {
         unsigned color = uintColor;
         auto* data = (unsigned*)GetData();
-        auto* data_end = (unsigned*)(GetData() + width_ * height_ * depth_ * components_);
+        auto* data_end = (unsigned*)(GetData() + width_ * height_ * depth_ * _components);
         for (; data < data_end; ++data)
             *data = color;
     }
     else
     {
         auto* src = (unsigned char*)&uintColor;
-        for (unsigned i = 0; i < width_ * height_ * depth_ * components_; ++i)
-            data_[i] = src[i % components_];
+        for (unsigned i = 0; i < width_ * height_ * depth_ * _components; ++i)
+            data_[i] = src[i % _components];
     }
 }
 
@@ -1245,9 +1252,9 @@ bool Image::SaveBMP(const String& fileName) const
     }
 
     if (data_)
-        return stbi_write_bmp(fileName.CString(), width_, height_, components_, data_.Get()) != 0;
-    else
-        return false;
+        return stbi_write_bmp(fileName.CString(), width_, height_, _components, data_.Get()) != 0;
+
+    return false;
 }
 
 bool Image::SavePNG(const String& fileName) const
@@ -1257,8 +1264,8 @@ bool Image::SavePNG(const String& fileName) const
     File outFile(context_, fileName, FILE_WRITE);
     if (outFile.IsOpen())
         return Image::Save(outFile); // Save uses PNG format
-    else
-        return false;
+
+    return false;
 }
 
 bool Image::SaveTGA(const String& fileName) const
@@ -1279,7 +1286,7 @@ bool Image::SaveTGA(const String& fileName) const
     }
 
     if (data_)
-        return stbi_write_tga(GetNativePath(fileName).CString(), width_, height_, components_, data_.Get()) != 0;
+        return stbi_write_tga(GetNativePath(fileName).CString(), width_, height_, _components, data_.Get()) != 0;
     else
         return false;
 }
@@ -1302,9 +1309,9 @@ bool Image::SaveJPG(const String& fileName, int quality) const
     }
 
     if (data_)
-        return stbi_write_jpg(GetNativePath(fileName).CString(), width_, height_, components_, data_.Get(), quality) != 0;
-    else
-        return false;
+        return stbi_write_jpg(GetNativePath(fileName).CString(), width_, height_, _components, data_.Get(), quality) != 0;
+
+    return false;
 }
 
 bool Image::SaveDDS(const String& fileName) const
@@ -1324,9 +1331,9 @@ bool Image::SaveDDS(const String& fileName) const
         return false;
     }
 
-    if (components_ != 4)
+    if (_components != 4)
     {
-        URHO3D_LOGERRORF("Can not save image with %u components to DDS", components_);
+        URHO3D_LOGERRORF("Can not save image with %u components to DDS", _components);
         return false;
     }
 
@@ -1385,9 +1392,9 @@ bool Image::SaveWEBP(const String& fileName, float compression /* = 0.0f */) con
         return false;
     }
 
-    if (components_ != 4 && components_ != 3)
+    if (_components != 4 && _components != 3)
     {
-        URHO3D_LOGERRORF("Can not save image with %u components to WebP, which requires 3 or 4; Try ConvertToRGBA first?", components_);
+        URHO3D_LOGERRORF("Can not save image with %u components to WebP, which requires 3 or 4; Try ConvertToRGBA first?", _components);
         return false;
     }
 
@@ -1418,10 +1425,10 @@ bool Image::SaveWEBP(const String& fileName, float compression /* = 0.0f */) con
     pic.custom_ptr = &wrt;
     WebPMemoryWriterInit(&wrt);
 
-    if (components_ == 4)
-        importResult = WebPPictureImportRGBA(&pic, data_.Get(), components_ * width_);
-    else if (components_ == 3)
-        importResult = WebPPictureImportRGB(&pic, data_.Get(), components_ * width_);
+    if (_components == 4)
+        importResult = WebPPictureImportRGBA(&pic, data_.Get(), _components * width_);
+    else if (_components == 3)
+        importResult = WebPPictureImportRGB(&pic, data_.Get(), _components * width_);
 
     if (!importResult)
     {
@@ -1465,10 +1472,10 @@ Color Image::GetPixel(int x, int y, int z) const
     x = Clamp(x, 0, width_ - 1);
     y = Clamp(y, 0, height_ - 1);
 
-    unsigned char* src = data_ + (z * width_ * height_ + y * width_ + x) * components_;
+    unsigned char* src = data_ + (z * width_ * height_ + y * width_ + x) * _components;
     Color ret;
 
-    switch (components_)
+    switch (_components)
     {
     case 4:
         ret.a_ = (float)src[3] / 255.0f;
@@ -1500,12 +1507,12 @@ unsigned Image::GetPixelInt(int x, int y, int z) const
     x = Clamp(x, 0, width_ - 1);
     y = Clamp(y, 0, height_ - 1);
 
-    unsigned char* src = data_ + (z * width_ * height_ + y * width_ + x) * components_;
+    uint8_t* src = data_ + (z * width_ * height_ + y * width_ + x) * _components;
     unsigned ret = 0;
-    if (components_ < 4)
+    if (_components < 4)
         ret |= 0xff000000;
 
-    switch (components_)
+    switch (_components)
     {
     case 4:
         ret |= (unsigned)src[3] << 24;
@@ -1576,7 +1583,7 @@ SharedPtr<Image> Image::GetNextLevel() const
         URHO3D_LOGERROR("Can not generate mip level from compressed data");
         return SharedPtr<Image>();
     }
-    if (components_ < 1 || components_ > 4)
+    if (_components < 1 || _components > 4)
     {
         URHO3D_LOGERROR("Illegal number of image components for mip level generation");
         return SharedPtr<Image>();
@@ -1601,9 +1608,9 @@ SharedPtr<Image> Image::GetNextLevel() const
     SharedPtr<Image> mipImage(new Image(context_));
 
     if (depth_ > 1)
-        mipImage->SetSize(widthOut, heightOut, depthOut, components_);
+        mipImage->SetSize(widthOut, heightOut, depthOut, _components);
     else
-        mipImage->SetSize(widthOut, heightOut, components_);
+        mipImage->SetSize(widthOut, heightOut, _components);
 
     const unsigned char* pixelDataIn = data_.Get();
     unsigned char* pixelDataOut = mipImage->data_.Get();
@@ -1615,27 +1622,27 @@ SharedPtr<Image> Image::GetNextLevel() const
         if (widthOut < heightOut)
             widthOut = heightOut;
 
-        switch (components_)
+        switch (_components)
         {
         case 1:
             for (int x = 0; x < widthOut; ++x)
-                pixelDataOut[x] = (unsigned char)(((unsigned)pixelDataIn[x * 2] + pixelDataIn[x * 2 + 1]) >> 1);
+                pixelDataOut[x] = (uint8_t)(((unsigned)pixelDataIn[x * 2] + pixelDataIn[x * 2 + 1]) >> 1);
             break;
 
         case 2:
             for (int x = 0; x < widthOut * 2; x += 2)
             {
-                pixelDataOut[x] = (unsigned char)(((unsigned)pixelDataIn[x * 2] + pixelDataIn[x * 2 + 2]) >> 1);
-                pixelDataOut[x + 1] = (unsigned char)(((unsigned)pixelDataIn[x * 2 + 1] + pixelDataIn[x * 2 + 3]) >> 1);
+                pixelDataOut[x] = (uint8_t)(((unsigned)pixelDataIn[x * 2] + pixelDataIn[x * 2 + 2]) >> 1);
+                pixelDataOut[x + 1] = (uint8_t)(((unsigned)pixelDataIn[x * 2 + 1] + pixelDataIn[x * 2 + 3]) >> 1);
             }
             break;
 
         case 3:
             for (int x = 0; x < widthOut * 3; x += 3)
             {
-                pixelDataOut[x] = (unsigned char)(((unsigned)pixelDataIn[x * 2] + pixelDataIn[x * 2 + 3]) >> 1);
-                pixelDataOut[x + 1] = (unsigned char)(((unsigned)pixelDataIn[x * 2 + 1] + pixelDataIn[x * 2 + 4]) >> 1);
-                pixelDataOut[x + 2] = (unsigned char)(((unsigned)pixelDataIn[x * 2 + 2] + pixelDataIn[x * 2 + 5]) >> 1);
+                pixelDataOut[x + 0] = (uint8_t)(((unsigned)pixelDataIn[x * 2] + pixelDataIn[x * 2 + 3]) >> 1);
+                pixelDataOut[x + 1] = (uint8_t)(((unsigned)pixelDataIn[x * 2 + 1] + pixelDataIn[x * 2 + 4]) >> 1);
+                pixelDataOut[x + 2] = (uint8_t)(((unsigned)pixelDataIn[x * 2 + 2] + pixelDataIn[x * 2 + 5]) >> 1);
             }
             break;
 
@@ -1657,7 +1664,7 @@ SharedPtr<Image> Image::GetNextLevel() const
     // 2D case
     else if (depth_ == 1)
     {
-        switch (components_)
+        switch (_components)
         {
         case 1:
             for (int y = 0; y < heightOut; ++y)
@@ -1669,7 +1676,7 @@ SharedPtr<Image> Image::GetNextLevel() const
                 for (int x = 0; x < widthOut; ++x)
                 {
                     out[x] = (unsigned char)(((unsigned)inUpper[x * 2] + inUpper[x * 2 + 1] +
-                                              inLower[x * 2] + inLower[x * 2 + 1]) >> 2);
+                        inLower[x * 2] + inLower[x * 2 + 1]) >> 2);
                 }
             }
             break;
@@ -1684,9 +1691,9 @@ SharedPtr<Image> Image::GetNextLevel() const
                 for (int x = 0; x < widthOut * 2; x += 2)
                 {
                     out[x] = (unsigned char)(((unsigned)inUpper[x * 2] + inUpper[x * 2 + 2] +
-                                              inLower[x * 2] + inLower[x * 2 + 2]) >> 2);
+                        inLower[x * 2] + inLower[x * 2 + 2]) >> 2);
                     out[x + 1] = (unsigned char)(((unsigned)inUpper[x * 2 + 1] + inUpper[x * 2 + 3] +
-                                                  inLower[x * 2 + 1] + inLower[x * 2 + 3]) >> 2);
+                        inLower[x * 2 + 1] + inLower[x * 2 + 3]) >> 2);
                 }
             }
             break;
@@ -1701,11 +1708,11 @@ SharedPtr<Image> Image::GetNextLevel() const
                 for (int x = 0; x < widthOut * 3; x += 3)
                 {
                     out[x] = (unsigned char)(((unsigned)inUpper[x * 2] + inUpper[x * 2 + 3] +
-                                              inLower[x * 2] + inLower[x * 2 + 3]) >> 2);
+                        inLower[x * 2] + inLower[x * 2 + 3]) >> 2);
                     out[x + 1] = (unsigned char)(((unsigned)inUpper[x * 2 + 1] + inUpper[x * 2 + 4] +
-                                                  inLower[x * 2 + 1] + inLower[x * 2 + 4]) >> 2);
+                        inLower[x * 2 + 1] + inLower[x * 2 + 4]) >> 2);
                     out[x + 2] = (unsigned char)(((unsigned)inUpper[x * 2 + 2] + inUpper[x * 2 + 5] +
-                                                  inLower[x * 2 + 2] + inLower[x * 2 + 5]) >> 2);
+                        inLower[x * 2 + 2] + inLower[x * 2 + 5]) >> 2);
                 }
             }
             break;
@@ -1720,13 +1727,13 @@ SharedPtr<Image> Image::GetNextLevel() const
                 for (int x = 0; x < widthOut * 4; x += 4)
                 {
                     out[x] = (unsigned char)(((unsigned)inUpper[x * 2] + inUpper[x * 2 + 4] +
-                                              inLower[x * 2] + inLower[x * 2 + 4]) >> 2);
+                        inLower[x * 2] + inLower[x * 2 + 4]) >> 2);
                     out[x + 1] = (unsigned char)(((unsigned)inUpper[x * 2 + 1] + inUpper[x * 2 + 5] +
-                                                  inLower[x * 2 + 1] + inLower[x * 2 + 5]) >> 2);
+                        inLower[x * 2 + 1] + inLower[x * 2 + 5]) >> 2);
                     out[x + 2] = (unsigned char)(((unsigned)inUpper[x * 2 + 2] + inUpper[x * 2 + 6] +
-                                                  inLower[x * 2 + 2] + inLower[x * 2 + 6]) >> 2);
+                        inLower[x * 2 + 2] + inLower[x * 2 + 6]) >> 2);
                     out[x + 3] = (unsigned char)(((unsigned)inUpper[x * 2 + 3] + inUpper[x * 2 + 7] +
-                                                  inLower[x * 2 + 3] + inLower[x * 2 + 7]) >> 2);
+                        inLower[x * 2 + 3] + inLower[x * 2 + 7]) >> 2);
                 }
             }
             break;
@@ -1739,13 +1746,13 @@ SharedPtr<Image> Image::GetNextLevel() const
     // 3D case
     else
     {
-        switch (components_)
+        switch (_components)
         {
         case 1:
             for (int z = 0; z < depthOut; ++z)
             {
-                const unsigned char* inOuter = &pixelDataIn[(z * 2) * width_ * height_];
-                const unsigned char* inInner = &pixelDataIn[(z * 2 + 1) * width_ * height_];
+                const uint8_t* inOuter = &pixelDataIn[(z * 2) * width_ * height_];
+                const uint8_t* inInner = &pixelDataIn[(z * 2 + 1) * width_ * height_];
 
                 for (int y = 0; y < heightOut; ++y)
                 {
@@ -1758,9 +1765,9 @@ SharedPtr<Image> Image::GetNextLevel() const
                     for (int x = 0; x < widthOut; ++x)
                     {
                         out[x] = (unsigned char)(((unsigned)inOuterUpper[x * 2] + inOuterUpper[x * 2 + 1] +
-                                                  inOuterLower[x * 2] + inOuterLower[x * 2 + 1] +
-                                                  inInnerUpper[x * 2] + inInnerUpper[x * 2 + 1] +
-                                                  inInnerLower[x * 2] + inInnerLower[x * 2 + 1]) >> 3);
+                            inOuterLower[x * 2] + inOuterLower[x * 2 + 1] +
+                            inInnerUpper[x * 2] + inInnerUpper[x * 2 + 1] +
+                            inInnerLower[x * 2] + inInnerLower[x * 2 + 1]) >> 3);
                     }
                 }
             }
@@ -1783,13 +1790,13 @@ SharedPtr<Image> Image::GetNextLevel() const
                     for (int x = 0; x < widthOut * 2; x += 2)
                     {
                         out[x] = (unsigned char)(((unsigned)inOuterUpper[x * 2] + inOuterUpper[x * 2 + 2] +
-                                                  inOuterLower[x * 2] + inOuterLower[x * 2 + 2] +
-                                                  inInnerUpper[x * 2] + inInnerUpper[x * 2 + 2] +
-                                                  inInnerLower[x * 2] + inInnerLower[x * 2 + 2]) >> 3);
+                            inOuterLower[x * 2] + inOuterLower[x * 2 + 2] +
+                            inInnerUpper[x * 2] + inInnerUpper[x * 2 + 2] +
+                            inInnerLower[x * 2] + inInnerLower[x * 2 + 2]) >> 3);
                         out[x + 1] = (unsigned char)(((unsigned)inOuterUpper[x * 2 + 1] + inOuterUpper[x * 2 + 3] +
-                                                      inOuterLower[x * 2 + 1] + inOuterLower[x * 2 + 3] +
-                                                      inInnerUpper[x * 2 + 1] + inInnerUpper[x * 2 + 3] +
-                                                      inInnerLower[x * 2 + 1] + inInnerLower[x * 2 + 3]) >> 3);
+                            inOuterLower[x * 2 + 1] + inOuterLower[x * 2 + 3] +
+                            inInnerUpper[x * 2 + 1] + inInnerUpper[x * 2 + 3] +
+                            inInnerLower[x * 2 + 1] + inInnerLower[x * 2 + 3]) >> 3);
                     }
                 }
             }
@@ -1812,17 +1819,17 @@ SharedPtr<Image> Image::GetNextLevel() const
                     for (int x = 0; x < widthOut * 3; x += 3)
                     {
                         out[x] = (unsigned char)(((unsigned)inOuterUpper[x * 2] + inOuterUpper[x * 2 + 3] +
-                                                  inOuterLower[x * 2] + inOuterLower[x * 2 + 3] +
-                                                  inInnerUpper[x * 2] + inInnerUpper[x * 2 + 3] +
-                                                  inInnerLower[x * 2] + inInnerLower[x * 2 + 3]) >> 3);
+                            inOuterLower[x * 2] + inOuterLower[x * 2 + 3] +
+                            inInnerUpper[x * 2] + inInnerUpper[x * 2 + 3] +
+                            inInnerLower[x * 2] + inInnerLower[x * 2 + 3]) >> 3);
                         out[x + 1] = (unsigned char)(((unsigned)inOuterUpper[x * 2 + 1] + inOuterUpper[x * 2 + 4] +
-                                                      inOuterLower[x * 2 + 1] + inOuterLower[x * 2 + 4] +
-                                                      inInnerUpper[x * 2 + 1] + inInnerUpper[x * 2 + 4] +
-                                                      inInnerLower[x * 2 + 1] + inInnerLower[x * 2 + 4]) >> 3);
+                            inOuterLower[x * 2 + 1] + inOuterLower[x * 2 + 4] +
+                            inInnerUpper[x * 2 + 1] + inInnerUpper[x * 2 + 4] +
+                            inInnerLower[x * 2 + 1] + inInnerLower[x * 2 + 4]) >> 3);
                         out[x + 2] = (unsigned char)(((unsigned)inOuterUpper[x * 2 + 2] + inOuterUpper[x * 2 + 5] +
-                                                      inOuterLower[x * 2 + 2] + inOuterLower[x * 2 + 5] +
-                                                      inInnerUpper[x * 2 + 2] + inInnerUpper[x * 2 + 5] +
-                                                      inInnerLower[x * 2 + 2] + inInnerLower[x * 2 + 5]) >> 3);
+                            inOuterLower[x * 2 + 2] + inOuterLower[x * 2 + 5] +
+                            inInnerUpper[x * 2 + 2] + inInnerUpper[x * 2 + 5] +
+                            inInnerLower[x * 2 + 2] + inInnerLower[x * 2 + 5]) >> 3);
                     }
                 }
             }
@@ -1845,21 +1852,21 @@ SharedPtr<Image> Image::GetNextLevel() const
                     for (int x = 0; x < widthOut * 4; x += 4)
                     {
                         out[x] = (unsigned char)(((unsigned)inOuterUpper[x * 2] + inOuterUpper[x * 2 + 4] +
-                                                  inOuterLower[x * 2] + inOuterLower[x * 2 + 4] +
-                                                  inInnerUpper[x * 2] + inInnerUpper[x * 2 + 4] +
-                                                  inInnerLower[x * 2] + inInnerLower[x * 2 + 4]) >> 3);
+                            inOuterLower[x * 2] + inOuterLower[x * 2 + 4] +
+                            inInnerUpper[x * 2] + inInnerUpper[x * 2 + 4] +
+                            inInnerLower[x * 2] + inInnerLower[x * 2 + 4]) >> 3);
                         out[x + 1] = (unsigned char)(((unsigned)inOuterUpper[x * 2 + 1] + inOuterUpper[x * 2 + 5] +
-                                                      inOuterLower[x * 2 + 1] + inOuterLower[x * 2 + 5] +
-                                                      inInnerUpper[x * 2 + 1] + inInnerUpper[x * 2 + 5] +
-                                                      inInnerLower[x * 2 + 1] + inInnerLower[x * 2 + 5]) >> 3);
+                            inOuterLower[x * 2 + 1] + inOuterLower[x * 2 + 5] +
+                            inInnerUpper[x * 2 + 1] + inInnerUpper[x * 2 + 5] +
+                            inInnerLower[x * 2 + 1] + inInnerLower[x * 2 + 5]) >> 3);
                         out[x + 2] = (unsigned char)(((unsigned)inOuterUpper[x * 2 + 2] + inOuterUpper[x * 2 + 6] +
-                                                      inOuterLower[x * 2 + 2] + inOuterLower[x * 2 + 6] +
-                                                      inInnerUpper[x * 2 + 2] + inInnerUpper[x * 2 + 6] +
-                                                      inInnerLower[x * 2 + 2] + inInnerLower[x * 2 + 6]) >> 3);
+                            inOuterLower[x * 2 + 2] + inOuterLower[x * 2 + 6] +
+                            inInnerUpper[x * 2 + 2] + inInnerUpper[x * 2 + 6] +
+                            inInnerLower[x * 2 + 2] + inInnerLower[x * 2 + 6]) >> 3);
                         out[x + 3] = (unsigned char)(((unsigned)inOuterUpper[x * 2 + 3] + inOuterUpper[x * 2 + 7] +
-                                                      inOuterLower[x * 2 + 3] + inOuterLower[x * 2 + 7] +
-                                                      inInnerUpper[x * 2 + 3] + inInnerUpper[x * 2 + 7] +
-                                                      inInnerLower[x * 2 + 3] + inInnerLower[x * 2 + 7]) >> 3);
+                            inOuterLower[x * 2 + 3] + inOuterLower[x * 2 + 7] +
+                            inInnerUpper[x * 2 + 3] + inInnerUpper[x * 2 + 7] +
+                            inInnerLower[x * 2 + 3] + inInnerLower[x * 2 + 7]) >> 3);
                     }
                 }
             }
@@ -1881,7 +1888,7 @@ SharedPtr<Image> Image::ConvertToRGBA() const
         URHO3D_LOGERROR("Can not convert compressed image to RGBA");
         return SharedPtr<Image>();
     }
-    if (components_ < 1 || components_ > 4)
+    if (_components < 1 || _components > 4)
     {
         URHO3D_LOGERROR("Illegal number of image components for conversion to RGBA");
         return SharedPtr<Image>();
@@ -1893,16 +1900,16 @@ SharedPtr<Image> Image::ConvertToRGBA() const
     }
 
     // Already RGBA?
-    if (components_ == 4)
+    if (_components == 4)
         return SharedPtr<Image>(const_cast<Image*>(this));
 
     SharedPtr<Image> ret(new Image(context_));
     ret->SetSize(width_, height_, depth_, 4);
 
     const unsigned char* src = data_;
-    unsigned char* dest = ret->GetData();
+    uint8_t* dest = ret->GetData();
 
-    switch (components_)
+    switch (_components)
     {
     case 1:
         for (unsigned i = 0; i < static_cast<unsigned>(width_ * height_ * depth_); ++i)
@@ -1987,7 +1994,7 @@ CompressedLevel Image::GetCompressedLevel(unsigned index) const
             if (offset + level.dataSize_ > GetMemoryUse())
             {
                 URHO3D_LOGERROR("Compressed level is outside image data. Offset: " + String(offset) + " Size: " + String(level.dataSize_) +
-                         " Datasize: " + String(GetMemoryUse()));
+                    " Datasize: " + String(GetMemoryUse()));
                 level.data_ = nullptr;
                 return level;
             }
@@ -2025,7 +2032,7 @@ CompressedLevel Image::GetCompressedLevel(unsigned index) const
             if (offset + level.dataSize_ > GetMemoryUse())
             {
                 URHO3D_LOGERROR("Compressed level is outside image data. Offset: " + String(offset) + " Size: " + String(level.dataSize_) +
-                         " Datasize: " + String(GetMemoryUse()));
+                    " Datasize: " + String(GetMemoryUse()));
                 level.data_ = nullptr;
                 return level;
             }
@@ -2063,7 +2070,7 @@ CompressedLevel Image::GetCompressedLevel(unsigned index) const
             if (offset + level.dataSize_ > GetMemoryUse())
             {
                 URHO3D_LOGERROR("Compressed level is outside image data. Offset: " + String(offset) + " Size: " + String(level.dataSize_) +
-                         " Datasize: " + String(GetMemoryUse()));
+                    " Datasize: " + String(GetMemoryUse()));
                 level.data_ = nullptr;
                 return level;
             }
@@ -2118,15 +2125,15 @@ Image* Image::GetSubimage(const IntRect& rect) const
         int height = rect.Height();
 
         auto* image = new Image(context_);
-        image->SetSize(width, height, components_);
+        image->SetSize(width, height, _components);
 
-        unsigned char* dest = image->GetData();
-        unsigned char* src = data_.Get() + (y * width_ + x) * components_;
+        uint8_t* dest = image->GetData();
+        uint8_t* src = data_.Get() + (y * width_ + x) * _components;
         for (int i = 0; i < height; ++i)
         {
-            memcpy(dest, src, (size_t)width * components_);
-            dest += width * components_;
-            src += width_ * components_;
+            memcpy(dest, src, (size_t)width * _components);
+            dest += width * _components;
+            src += width_ * _components;
         }
 
         return image;
@@ -2192,8 +2199,8 @@ Image* Image::GetSubimage(const IntRect& rect) const
         image->depth_ = 1;
         image->compressedFormat_ = compressedFormat_;
         image->numCompressedLevels_ = subimageLevels;
-        image->components_ = components_;
-        image->data_ = new unsigned char[subimageData.Size()];
+        image->_components = _components;
+        image->data_ = new uint8_t[subimageData.Size()];
         memcpy(image->data_.Get(), &subimageData[0], subimageData.Size());
         image->SetMemoryUse(subimageData.Size());
 
@@ -2218,7 +2225,7 @@ SDL_Surface* Image::GetSDLSurface(const IntRect& rect) const
         return nullptr;
     }
 
-    if (components_ < 3)
+    if (_components < 3)
     {
         URHO3D_LOGERROR("Can not get SDL surface from image " + GetName() + " with less than 3 components");
         return nullptr;
@@ -2245,18 +2252,18 @@ SDL_Surface* Image::GetSDLSurface(const IntRect& rect) const
     unsigned bMask = 0x00ff0000;
     unsigned aMask = 0xff000000;
 
-    SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, components_ * 8, rMask, gMask, bMask, aMask);
+    SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, _components * 8, rMask, gMask, bMask, aMask);
     if (surface)
     {
         SDL_LockSurface(surface);
 
-        auto* destination = reinterpret_cast<unsigned char*>(surface->pixels);
-        unsigned char* source = data_ + components_ * (imageWidth * imageRect.top_ + imageRect.left_);
+        auto* destination = reinterpret_cast<uint8_t*>(surface->pixels);
+        uint8_t* source = data_ + _components * (imageWidth * imageRect.top_ + imageRect.left_);
         for (int i = 0; i < height; ++i)
         {
-            memcpy(destination, source, (size_t)components_ * width);
+            memcpy(destination, source, (size_t)_components * width);
             destination += surface->pitch;
-            source += components_ * imageWidth;
+            source += _components * imageWidth;
         }
 
         SDL_UnlockSurface(surface);
@@ -2317,16 +2324,16 @@ void Image::GetLevels(PODVector<const Image*>& levels) const
     }
 }
 
-unsigned char* Image::GetImageData(Deserializer& source, int& width, int& height, unsigned& components)
+uint8_t* Image::GetImageData(Deserializer& source, int32_t& width, int32_t& height, uint32_t& components)
 {
-    unsigned dataSize = source.GetSize();
+    uint32_t dataSize = source.GetSize();
 
-    SharedArrayPtr<unsigned char> buffer(new unsigned char[dataSize]);
-    source.Read(buffer.Get(), dataSize);
-    return stbi_load_from_memory(buffer.Get(), dataSize, &width, &height, (int*)&components, 0);
+    std::unique_ptr<uint8_t[]> buffer(new uint8_t[dataSize]);
+    source.Read(buffer.get(), dataSize);
+    return stbi_load_from_memory(buffer.get(), dataSize, &width, &height, (int*)&components, 0);
 }
 
-void Image::FreeImageData(unsigned char* pixelData)
+void Image::FreeImageData(uint8_t* pixelData)
 {
     if (!pixelData)
         return;
@@ -2336,7 +2343,7 @@ void Image::FreeImageData(unsigned char* pixelData)
 
 bool Image::HasAlphaChannel() const
 {
-    return components_ > 3;
+    return _components > 3;
 }
 
 // Author: Josh Engebretson (AtomicGameEngine)
@@ -2351,7 +2358,7 @@ bool Image::SetSubimage(const Image* image, const IntRect& rect)
         return false;
     }
 
-    if (components_ != image->components_)
+    if (_components != image->_components)
     {
         URHO3D_LOGERROR("Can not set subimage in image " + GetName() + " with different number of components");
         return false;
@@ -2368,18 +2375,18 @@ bool Image::SetSubimage(const Image* image, const IntRect& rect)
     if (destWidth == image->GetWidth() && destHeight == image->GetHeight())
     {
         unsigned char* src = image->GetData();
-        unsigned char* dest = data_.Get() + (rect.top_ * width_ + rect.left_) * components_;
+        unsigned char* dest = data_.Get() + (rect.top_ * width_ + rect.left_) * _components;
         for (int i = 0; i < destHeight; ++i)
         {
-            memcpy(dest, src, (size_t)destWidth * components_);
+            memcpy(dest, src, (size_t)destWidth * _components);
 
-            src += destWidth * image->components_;
-            dest += width_ * components_;
+            src += destWidth * image->_components;
+            dest += width_ * _components;
         }
     }
     else
     {
-        unsigned char* dest = data_.Get() + (rect.top_ * width_ + rect.left_) * components_;
+        uint8_t* dest = data_.Get() + (rect.top_ * width_ + rect.left_) * _components;
         for (int y = 0; y < destHeight; ++y)
         {
             for (int x = 0; x < destWidth; ++x)
@@ -2389,15 +2396,13 @@ bool Image::SetSubimage(const Image* image, const IntRect& rect)
                 const float yF = (image->height_ > 1) ? static_cast<float>(y) / (destHeight - 1) : 0.0f;
                 const unsigned uintColor = image->GetPixelBilinear(xF, yF).ToUInt();
 
-                memcpy(dest, reinterpret_cast<const unsigned char*>(&uintColor), components_);
+                memcpy(dest, reinterpret_cast<const uint8_t*>(&uintColor), _components);
 
-                dest += components_;
+                dest += _components;
             }
-            dest += (width_ - destWidth) * components_;
+            dest += (width_ - destWidth) * _components;
         }
     }
 
     return true;
-}
-
 }
